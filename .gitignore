@@ -1,0 +1,13 @@
+# deps
+node_modules
+
+# build dir
+dist
+
+# private config
+config/*
+!config/myfish.example.js
+
+# test files
+testdb
+scripts/*.sh
