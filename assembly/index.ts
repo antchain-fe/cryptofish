@@ -130,7 +130,6 @@ export default class CryptoFishContract extends BaseContract {
     let collection!: Collection;
     for (let index = 0; index < this.collections.length; index += 1) {
       const current = this.collections[index];
-      this.log(`${current.get('attribute')}:${attribute}`);
       if (current.get('attribute') == attribute) {
         collection = current;
         break;
