@@ -14,19 +14,28 @@ export default class CryptoFishContract extends BaseContract {
   private owner: Address;
   // Collections list
   private collections: Collection[];
+
+  // Private builtin attributes infos
+  private attributeKeyList: AttributeType[];
   private attributes: Map<AttributeType, string>;
+  private attributeWeights: Map<AttributeType, u32>;
 
   constructor() {
     super();
-    // TODO: move from mockConstructor
+    this.init();
   }
 
-  // TODO: for local test
-  public mockConstructor(): void {
+  // TODO: change to private before deploy
+  // Init contract, only called when contract is deploying by developer
+  public init(): void {
     this.limitPerAddress = 100;
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
+    // attribute key list depends on rule hash
+    this.attributeKeyList = ['skin', 'background', 'frame', 'fin', 'eye', 'tail'];
+
+    // attributes depends on rule hash
     const attributes = new Map<AttributeType, string>();
     attributes.set('skin', '0123456789');
     attributes.set('background', '0123456789ABCDEF');
@@ -36,6 +45,16 @@ export default class CryptoFishContract extends BaseContract {
     attributes.set('tail', '0123456789');
     this.attributes = attributes;
 
+    // `skin/background/frame` has double weights than others when calculating score
+    const attributeWeights = new Map<AttributeType, u32>();
+    attributeWeights.set('skin', 200);
+    attributeWeights.set('background', 200);
+    attributeWeights.set('frame', 200);
+    attributeWeights.set('fin', 100);
+    attributeWeights.set('eye', 100);
+    attributeWeights.set('tail', 100);
+    this.attributeWeights = attributeWeights;
+
     this.log(`contract created by: ${this.owner}`);
 
     // Grant the first(index: 0) collection to our developer.
@@ -44,16 +63,19 @@ export default class CryptoFishContract extends BaseContract {
 
   // Mint collection for current address
   public mint(): bool {
+    // current address
     const creator = my.getSender().toString();
 
-    // No limit for developers
+    // Limit for each address(see `this.limitPerAddress`)
+    // Developers are not restricted
     if (creator != this.owner && this.getOwnedCollections().length >= this.limitPerAddress) {
       this.log(`error: you cannot own more than ${this.limitPerAddress} collections(${creator})`);
       return false;
     }
 
+    // generate unique and available attribute
     const attribute = this.generateUniqAttribute();
-    const index = this.collections.length;
+    const index = this.collections.length; // TODO: needs to lock `this.collections`?
 
     const collection: Collection = new Map<string, string>();
     collection.set('index', index.toString());
@@ -77,6 +99,7 @@ export default class CryptoFishContract extends BaseContract {
   }
 
   // Get owned collections
+  // "getOwnedCollections()" => "collection[](Array<Map<string, string>>)"
   public getOwnedCollections(): Collection[] {
     const address: string = my.getSender().toString();
     const collections: Collection[] = [];
@@ -114,22 +137,26 @@ export default class CryptoFishContract extends BaseContract {
     return attrU32List.reduce<u32>((pv, cv) => pv + cv, 0);
   }
 
-  // Judge is attribute available and unique
+  // Attribute should be available and unique
   private isAttributeAvailable(attribute: Attribute): bool {
     // Should be unique
     for (let index = 0; index < this.collections.length; index += 1) {
       if (this.collections[index].get('attribute') == attribute) return false;
     }
 
-    // Should be contained in attr range
-    // const attrs: string[] = ['skin', 'background', 'frame', 'fin', 'eye', 'tail'];
-    // const currentAttrList: string[] = attribute.split('');
-    // for (let index = 0; index < attrs.length; index += 1) {
-    //   const attrKey = attrs[index];
-    //   if (!this.attributes.get(attrKey) || !this.attributes.get('attrKey').includes(currentAttrList[index])) {
-    //     return false;
-    //   }
-    // }
+    // Should be contained in attributes range
+    const currentAttrList: string[] = attribute.split('');
+    const keyList = this.attributeKeyList;
+    for (let index = 0; index < keyList.length; index += 1) {
+      const attributeRangeString = this.attributes.get(keyList[index]); // such as `0123456789`
+      // make sure each attribute's value under the attributes range rule
+      if (!attributeRangeString || !attributeRangeString.split('').includes(currentAttrList[index])) {
+        this.log(`error: attribute(${attribute}) is not available(${keyList[index]}: ${attributeRangeString})`);
+        return false;
+      }
+    }
+
+    // Congratulations! Your generated attribute is available.
     return true;
   }
 
