@@ -90,11 +90,54 @@ export default class CryptoFishContract extends BaseContract {
     return true;
   }
 
+  // Favor collection by #Index
+  // "favorByIndex(int)[0]" => "true/false"
+  public favorByIndex(index: u32): bool {
+    return this.favorCollection(this.getCollectionByIndex(index));
+  }
+
+  // Favor collection by attribute
+  // "favorByAttribute(string)[123456]" => "true/false"
+  public favorByAttribute(attribute: string): bool {
+    return this.favorCollection(this.getCollectionByAttribute(attribute));
+  }
+
+  // Favor collection by attribute
+  private favorCollection(collection: Collection): bool {
+    if (!collection.get('index')) return false;
+    // current address
+    const address = my.getSender().toString();
+
+    // cannot favor your owned collection, except developer
+    if (collection.get('creator') == address && address != this.owner) return false;
+    const favorCount = parseInt(collection.get('favorCount'), 10);
+    collection.set('favorCount', (<u32>(favorCount + 1)).toString());
+    return true;
+  }
+
   // Get cryptofish collection by index(u32)
   // "getCollectionByIndex(int)[1]" => "collection(Map<string, string>)"
   public getCollectionByIndex(index: u32): Collection {
     const collection = this.collections[index];
-    my.println(`getCollectionByIndex(${index}) => ${collection.get('attribute')}`);
+    this.log(`getCollectionByIndex(${index}) =>`);
+    this.printCollection(collection);
+    return collection;
+  }
+
+  // Get cryptofish collection by attribute(string)
+  // "getCollectionByAttribute(string)[123456]" => "collection(Map<string, string>)"
+  public getCollectionByAttribute(attribute: string): Collection {
+    let collection!: Collection;
+    for (let index = 0; index < this.collections.length; index += 1) {
+      const current = this.collections[index];
+      this.log(`${current.get('attribute')}:${attribute}`);
+      if (current.get('attribute') == attribute) {
+        collection = current;
+        break;
+      }
+    }
+    this.log(`getCollectionByAttribute(${attribute}) =>`);
+    this.printCollection(collection);
     return collection;
   }
 
