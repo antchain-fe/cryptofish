@@ -17,8 +17,8 @@ export default class CryptoFishContract extends BaseContract {
 
   // Private builtin attributes infos
   private attributeKeyList: AttributeType[];
-  private attributes: Map<AttributeType, string>;
   private attributeWeights: Map<AttributeType, u32>;
+  private attributes: Map<AttributeType, string>;
 
   constructor() {
     super();
@@ -134,7 +134,15 @@ export default class CryptoFishContract extends BaseContract {
   private calculateScore(attribute: Attribute): u32 {
     const attrStrList: string[] = attribute.split('');
     const attrU32List: u32[] = attrStrList.map<u32>((hex) => parseHex2Int(hex));
-    return attrU32List.reduce<u32>((pv, cv) => pv + cv, 0);
+    let score: u32 = 0;
+
+    // Prevent to use `reduce` because of the closures issue in assemblyscript
+    for (let index = 0; index < attrU32List.length; index++) {
+      const currentScore = attrU32List[index];
+      const weight = this.attributeWeights.get(this.attributeKeyList[index]) || 100;
+      score += currentScore * weight;
+    }
+    return score;
   }
 
   // Attribute should be available and unique
