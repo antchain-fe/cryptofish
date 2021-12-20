@@ -11,14 +11,14 @@ export default class CryptoFishContract extends BaseContract {
   // Collection count limit per address
   private limitPerAddress: i32;
   // CryptoFish contract owner's address
-  private owner: Address;
+  private owner!: Address;
   // Collections list
-  private collections: Collection[];
+  private collections!: Collection[];
 
   // Private builtin attributes infos
-  private attributeKeyList: AttributeType[];
-  private attributeWeights: Map<AttributeType, u32>;
-  private attributes: Map<AttributeType, string>;
+  private attributeKeyList!: AttributeType[];
+  private attributeWeights!: Map<AttributeType, u32>;
+  private attributes!: Map<AttributeType, string>;
 
   constructor() {
     super();
