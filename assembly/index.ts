@@ -9,7 +9,7 @@ export default class CryptoFishContract extends BaseContract {
   public standard: string = 'CryptoFish';
 
   // Collection count limit per address
-  private limitPerAddress: i32;
+  private limit: u32;
   // CryptoFish contract owner's address
   private owner!: Address;
   // Collections list
@@ -28,7 +28,7 @@ export default class CryptoFishContract extends BaseContract {
   // TODO: change to private before deploy
   // Init contract, only called when contract is deploying by developer
   public init(): void {
-    this.limitPerAddress = 100;
+    this.limit = 100;
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
@@ -65,11 +65,12 @@ export default class CryptoFishContract extends BaseContract {
   public mint(): bool {
     // current address
     const creator = my.getSender().toString();
+    const ownedCount = <u32>this.getOwnedCollections().length;
 
-    // Limit for each address(see `this.limitPerAddress`)
+    // Limit for each address(see `this.limit`)
     // Developers are not restricted
-    if (creator != this.owner && this.getOwnedCollections().length >= this.limitPerAddress) {
-      this.log(`error: you cannot own more than ${this.limitPerAddress} collections(${creator})`);
+    if (creator != this.owner && ownedCount >= this.limit) {
+      this.log(`error: you cannot own more than ${this.limit} collections(${creator})`);
       return false;
     }
 
@@ -138,6 +139,10 @@ export default class CryptoFishContract extends BaseContract {
     this.log(`getCollectionByAttribute(${attribute}) =>`);
     this.printCollection(collection);
     return collection;
+  }
+
+  public getCollectionCount(): u32 {
+    return <u32>this.collections.length;
   }
 
   // Get owned collections
