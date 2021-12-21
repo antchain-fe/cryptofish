@@ -82,4 +82,23 @@ describe('CryptoFish Contract', () => {
     const newCount = contract.getCollectionCount();
     expect(newCount).toBe(2);
   });
+
+  it('should work with getCollections', () => {
+    const contract = init();
+    for (let index = 0; index < 10; index += 1) {
+      contract.mint();
+    }
+
+    const c1 = contract.getCollections(3, 0);
+    expect(c1.length).toBe(3);
+    expect(c1[0].get('index')).toBe('0');
+    expect(c1[1].get('index')).toBe('1');
+    expect(c1[2].get('index')).toBe('2');
+
+    const c2 = contract.getCollections(3, 3);
+    expect(c2.length).toBe(3);
+    expect(c2[0].get('index')).toBe('3');
+    expect(c2[1].get('index')).toBe('4');
+    expect(c2[2].get('index')).toBe('5');
+  });
 });

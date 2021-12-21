@@ -172,7 +172,6 @@ export default class CryptoFishContract extends BaseContract {
   public logAll(): void {
     this.log(`total: ${this.collections.length}`);
     this.printCollections(this.collections);
-    this.log(my.getTxHash());
   }
 
   // Generate unique attribute
