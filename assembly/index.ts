@@ -10,6 +10,8 @@ export default class CryptoFishContract extends BaseContract {
 
   // Collection count limit per address
   private limit: u32;
+  // Mint available, depend on developer
+  private canMint!: bool;
   // CryptoFish contract owner's address
   private owner!: Address;
   // Collections list
@@ -28,6 +30,7 @@ export default class CryptoFishContract extends BaseContract {
   // TODO: change to private before deploy
   // Init contract, only called when contract is deploying by developer
   public init(): void {
+    this.canMint = true;
     this.limit = 20; // TODO: verify this value
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
@@ -69,8 +72,15 @@ export default class CryptoFishContract extends BaseContract {
 
     // Limit for each address(see `this.limit`)
     // Developers are not restricted
-    if (creator != this.owner && ownedCount >= this.limit) {
+    if (!this.isOwner() && ownedCount >= this.limit) {
       this.log(`error: you cannot own more than ${this.limit} collections(${creator})`);
+      return false;
+    }
+
+    // Mint available
+    // Developers are not restricted
+    if (!this.isOwner() && !this.canMint) {
+      this.log(`error: ${this.standard} minting is not available`);
       return false;
     }
 
@@ -89,6 +99,13 @@ export default class CryptoFishContract extends BaseContract {
     this.printCollection(collection);
     this.collections.push(collection);
     return true;
+  }
+
+  // Set canMint var, only for developers
+  public setCanMint(canMint: bool): void {
+    if (this.isOwner()) {
+      this.canMint = canMint;
+    }
   }
 
   // Favor collection by #Index
@@ -110,7 +127,7 @@ export default class CryptoFishContract extends BaseContract {
     const address = my.getSender().toString();
 
     // cannot favor your owned collection, except developer
-    if (collection.get('creator') == address && address != this.owner) return false;
+    if (collection.get('creator') == address && !this.isOwner()) return false;
     const favorCount = parseInt(collection.get('favorCount'), 10);
     collection.set('favorCount', (<u32>(favorCount + 1)).toString());
     return true;
@@ -220,6 +237,11 @@ export default class CryptoFishContract extends BaseContract {
 
     // Congratulations! Your generated attribute is available.
     return true;
+  }
+
+  // Get is owner(developer)
+  private isOwner(): bool {
+    return this.owner == my.getSender().toString();
   }
 
   // Print collections to stdout
