@@ -16,6 +16,9 @@ export default class CryptoFishContract extends BaseContract {
   private owner!: Address;
   // Collections list
   private collections!: Collection[];
+  // Picked logo collection
+  private logo!: Collection;
+  private logoPicked!: bool;
 
   // Private builtin attributes infos
   private attributeKeyList!: AttributeType[];
@@ -32,6 +35,7 @@ export default class CryptoFishContract extends BaseContract {
   public init(): void {
     this.canMint = true;
     this.limit = 20; // TODO: verify this value
+    this.logoPicked = false;
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
@@ -106,6 +110,34 @@ export default class CryptoFishContract extends BaseContract {
     if (this.isOwner()) {
       this.canMint = canMint;
     }
+  }
+
+  // Pick logo in current collections range
+  // Only for developers
+  public pickLogoByScore(): bool {
+    if (!this.isOwner()) {
+      this.log('error: you cannot pick logo');
+      return false;
+    }
+    if (this.logoPicked) {
+      this.log(`error: logo has been picked(${this.logoPicked}):`);
+      this.printCollection(this.logo);
+      return false;
+    }
+    let logo!: Collection;
+    let logoScore: u32 = 0;
+    for (let index = 0; index < this.collections.length; index += 1) {
+      const collection = this.collections[index];
+      const currentScore = <u32>parseInt(collection.get('score'), 10);
+      if (currentScore > logoScore) {
+        logo = collection;
+      }
+    }
+    this.logo = logo;
+    this.logoPicked = true;
+    this.log(`pickLogoByScore success(${logoScore})`);
+    this.printCollection(logo);
+    return true;
   }
 
   // Favor collection by #Index
