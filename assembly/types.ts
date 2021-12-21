@@ -11,6 +11,12 @@ export type Address = string;
 export type Attribute = string;
 
 /**
+ * Attribute type union of collection
+ * @description skin | background | frame | fin | eye | tail
+ */
+export type AttributeType = string;
+
+/**
  * Collection item of cryptofish
  *
  * @param index {string(u32)} start from zero(0)
