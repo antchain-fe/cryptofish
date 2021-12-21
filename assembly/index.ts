@@ -28,7 +28,7 @@ export default class CryptoFishContract extends BaseContract {
   // TODO: change to private before deploy
   // Init contract, only called when contract is deploying by developer
   public init(): void {
-    this.limit = 100;
+    this.limit = 20; // TODO: verify this value
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
@@ -156,6 +156,14 @@ export default class CryptoFishContract extends BaseContract {
       collections.push(collection);
     }
     this.log(`getOwnedCollections: ${collections.length}`);
+    this.printCollections(collections);
+    return collections;
+  }
+
+  // Get all collections with limit and skip filter
+  // "getCollections(int, int)[20, 0]" => "collection[](Array<Map<string, string>>)"
+  public getCollections(limit: u32, skip: u32): Collection[] {
+    const collections = this.collections.slice(skip, skip + limit);
     this.printCollections(collections);
     return collections;
   }
