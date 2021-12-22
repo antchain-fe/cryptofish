@@ -4,6 +4,7 @@ package-lock.json
 
 # build dir
 dist
+log
 
 # private config
 config/*
