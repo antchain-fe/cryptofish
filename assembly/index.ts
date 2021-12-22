@@ -10,25 +10,28 @@ export default class CryptoFishContract extends BaseContract {
 
   // Collection count limit per address
   private limit: u32;
+  // Mint available, depend on developer
+  private canMint: bool;
   // CryptoFish contract owner's address
-  private owner!: Address;
+  private owner: Address;
   // Collections list
-  private collections!: Collection[];
+  private collections: Collection[];
+  // Picked logo collection
+  private logo: Collection;
+  private isLogoPicked: bool;
 
   // Private builtin attributes infos
-  private attributeKeyList!: AttributeType[];
-  private attributeWeights!: Map<AttributeType, u32>;
-  private attributes!: Map<AttributeType, string>;
+  private attributeKeyList: AttributeType[];
+  private attributeWeights: Map<AttributeType, u32>;
+  private attributes: Map<AttributeType, string>;
 
   constructor() {
     super();
-    this.init();
-  }
-
-  // TODO: change to private before deploy
-  // Init contract, only called when contract is deploying by developer
-  public init(): void {
-    this.limit = 100;
+    // Prepare contract when deploy contract
+    this.canMint = true;
+    this.limit = 20; // TODO: verify this value
+    this.isLogoPicked = false;
+    this.logo = new Map<string, string>();
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
@@ -61,6 +64,10 @@ export default class CryptoFishContract extends BaseContract {
     this.mint();
   }
 
+  // TODO: change to private before deploy
+  // Init contract, only called when contract is deploying by developer
+  public init(): void {}
+
   // Mint collection for current address
   public mint(): bool {
     // current address
@@ -69,8 +76,15 @@ export default class CryptoFishContract extends BaseContract {
 
     // Limit for each address(see `this.limit`)
     // Developers are not restricted
-    if (creator != this.owner && ownedCount >= this.limit) {
+    if (!this.isOwner() && ownedCount >= this.limit) {
       this.log(`error: you cannot own more than ${this.limit} collections(${creator})`);
+      return false;
+    }
+
+    // Mint available
+    // Developers are not restricted
+    if (!this.isOwner() && !this.canMint) {
+      this.log(`error: ${this.standard} minting is not available`);
       return false;
     }
 
@@ -85,10 +99,58 @@ export default class CryptoFishContract extends BaseContract {
     collection.set('score', this.calculateScore(attribute).toString());
     collection.set('favorCount', '0');
 
-    this.log(`mint collection success:`);
+    this.log('mint collection success:');
     this.printCollection(collection);
     this.collections.push(collection);
     return true;
+  }
+
+  // Set canMint var, only for developers
+  public setCanMint(canMint: bool): void {
+    if (this.isOwner()) {
+      this.canMint = canMint;
+    }
+  }
+
+  // Pick logo in current collections range
+  public pickLogoByScore(): bool {
+    // Only for developers
+    if (!this.isOwner()) {
+      this.log('error: you do not have permission to pick logo');
+      return false;
+    }
+    // Can only been picked once
+    if (this.isLogoPicked) {
+      this.log(`error: logo has been picked(${this.isLogoPicked}):`);
+      this.printCollection(this.logo);
+      return false;
+    }
+    let logo!: Collection;
+    let logoScore: u32 = 0;
+    for (let index = 0; index < this.collections.length; index += 1) {
+      const collection = this.collections[index];
+      if (!collection || !collection.get('index')) continue;
+      const currentScore = <u32>parseInt(collection.get('score'), 10);
+      if (currentScore > logoScore) {
+        logo = collection;
+        logoScore = currentScore;
+      }
+    }
+    this.logo = logo;
+    this.isLogoPicked = true;
+    this.log(`pickLogoByScore success(${logoScore})`);
+    this.printCollection(logo);
+    return true;
+  }
+
+  // Get picked logo collection
+  public getLogo(): Collection {
+    if (!this.isLogoPicked) {
+      throw new Error('logo has not been picked, please wait');
+    }
+    this.log('get logo success:');
+    this.printCollection(this.logo);
+    return this.logo;
   }
 
   // Favor collection by #Index
@@ -110,7 +172,7 @@ export default class CryptoFishContract extends BaseContract {
     const address = my.getSender().toString();
 
     // cannot favor your owned collection, except developer
-    if (collection.get('creator') == address && address != this.owner) return false;
+    if (collection.get('creator') == address && !this.isOwner()) return false;
     const favorCount = parseInt(collection.get('favorCount'), 10);
     collection.set('favorCount', (<u32>(favorCount + 1)).toString());
     return true;
@@ -160,11 +222,18 @@ export default class CryptoFishContract extends BaseContract {
     return collections;
   }
 
+  // Get all collections with limit and skip filter
+  // "getCollections(int, int)[20, 0]" => "collection[](Array<Map<string, string>>)"
+  public getCollections(limit: u32, skip: u32): Collection[] {
+    const collections = this.collections.slice(skip, skip + limit);
+    this.printCollections(collections);
+    return collections;
+  }
+
   // TODO: Test function, should be removed
   public logAll(): void {
     this.log(`total: ${this.collections.length}`);
     this.printCollections(this.collections);
-    this.log(my.getTxHash());
   }
 
   // Generate unique attribute
@@ -213,6 +282,11 @@ export default class CryptoFishContract extends BaseContract {
 
     // Congratulations! Your generated attribute is available.
     return true;
+  }
+
+  // Get is owner(developer)
+  private isOwner(): bool {
+    return this.owner == my.getSender().toString();
   }
 
   // Print collections to stdout

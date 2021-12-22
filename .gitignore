@@ -1,8 +1,10 @@
 # deps
 node_modules
+package-lock.json
 
 # build dir
 dist
+log
 
 # private config
 config/*
