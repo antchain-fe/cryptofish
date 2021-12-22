@@ -2,6 +2,12 @@
   "name": "@antchain/cryptofish",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "compile": "myfish compile -d",
+    "depoly": "",
+    "depoly:local": "myfish run -m \"onCreate()\" -v myvm -u myvm | grep \"🐟\"",
+    "test": "asp --config node_modules/@antchain/myfish-asp-config"
+  },
   "dependencies": {
     "@antchain/myassembly": "0.0.5-alpha.0",
     "@assemblyscript/loader": "^0.19.22"
