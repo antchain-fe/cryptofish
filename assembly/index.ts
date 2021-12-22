@@ -144,14 +144,13 @@ export default class CryptoFishContract extends BaseContract {
   }
 
   // Get picked logo collection
-  public getLogo(): Collection | null {
-    if (this.isLogoPicked) {
-      this.log('get logo success:');
-      this.printCollection(this.logo);
-      return this.logo;
+  public getLogo(): Collection {
+    if (!this.isLogoPicked) {
+      throw new Error('logo has not been picked, please wait');
     }
-    this.log('error: logo has not been picked, please wait');
-    return null;
+    this.log('get logo success:');
+    this.printCollection(this.logo);
+    return this.logo;
   }
 
   // Favor collection by #Index

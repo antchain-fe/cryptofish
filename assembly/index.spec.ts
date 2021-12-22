@@ -109,8 +109,10 @@ describe('CryptoFish Contract', () => {
     const success = contract.mint();
     expect(success).toBe(true);
 
-    const fakeLogo = contract.getLogo();
-    expect(!!fakeLogo).toBeFalsy();
+    expect(() => {
+      const c = init();
+      c.getLogo();
+    }).toThrow();
 
     const result = contract.pickLogoByScore();
     expect(result).toBe(true);
