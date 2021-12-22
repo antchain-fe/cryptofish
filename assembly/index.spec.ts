@@ -1,7 +1,8 @@
 import CryptoFishContract from './index';
 
 function init(): CryptoFishContract {
-  return new CryptoFishContract();
+  const contract = new CryptoFishContract();
+  return contract;
 }
 
 describe('CryptoFish Contract', () => {
@@ -85,20 +86,39 @@ describe('CryptoFish Contract', () => {
 
   it('should work with getCollections', () => {
     const contract = init();
-    for (let index = 0; index < 10; index += 1) {
-      contract.mint();
+    for (let index = 0; index < 6; index += 1) {
+      const success = contract.mint();
+      expect(success).toBe(true);
     }
 
     const c1 = contract.getCollections(3, 0);
     expect(c1.length).toBe(3);
-    expect(c1[0].get('index')).toBe('0');
-    expect(c1[1].get('index')).toBe('1');
-    expect(c1[2].get('index')).toBe('2');
+    expect(c1[0].get('index')).toBe('0', '0');
+    expect(c1[1].get('index')).toBe('1', '1');
+    expect(c1[2].get('index')).toBe('2', '2');
 
     const c2 = contract.getCollections(3, 3);
     expect(c2.length).toBe(3);
-    expect(c2[0].get('index')).toBe('3');
-    expect(c2[1].get('index')).toBe('4');
-    expect(c2[2].get('index')).toBe('5');
+    expect(c2[0].get('index')).toBe('3', '3');
+    expect(c2[1].get('index')).toBe('4', '4');
+    expect(c2[2].get('index')).toBe('5', '5');
+  });
+
+  it('should work with pickLogoByScore/getLogo', () => {
+    const contract = init();
+    const success = contract.mint();
+    expect(success).toBe(true);
+
+    const fakeLogo = contract.getLogo();
+    expect(!!fakeLogo).toBeFalsy();
+
+    const result = contract.pickLogoByScore();
+    expect(result).toBe(true);
+
+    const logo = contract.getLogo();
+    expect(!!logo).toBeTruthy();
+
+    const result2 = contract.pickLogoByScore();
+    expect(result2).toBe(false);
   });
 });

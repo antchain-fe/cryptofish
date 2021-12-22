@@ -11,14 +11,14 @@ export default class CryptoFishContract extends BaseContract {
   // Collection count limit per address
   private limit: u32;
   // Mint available, depend on developer
-  private canMint!: bool;
+  private canMint: bool;
   // CryptoFish contract owner's address
   private owner!: Address;
   // Collections list
   private collections!: Collection[];
   // Picked logo collection
   private logo!: Collection;
-  private logoPicked!: bool;
+  private isLogoPicked: bool;
 
   // Private builtin attributes infos
   private attributeKeyList!: AttributeType[];
@@ -35,7 +35,7 @@ export default class CryptoFishContract extends BaseContract {
   public init(): void {
     this.canMint = true;
     this.limit = 20; // TODO: verify this value
-    this.logoPicked = false;
+    this.isLogoPicked = false;
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
@@ -99,7 +99,7 @@ export default class CryptoFishContract extends BaseContract {
     collection.set('score', this.calculateScore(attribute).toString());
     collection.set('favorCount', '0');
 
-    this.log(`mint collection success:`);
+    this.log('mint collection success:');
     this.printCollection(collection);
     this.collections.push(collection);
     return true;
@@ -113,14 +113,15 @@ export default class CryptoFishContract extends BaseContract {
   }
 
   // Pick logo in current collections range
-  // Only for developers
   public pickLogoByScore(): bool {
+    // Only for developers
     if (!this.isOwner()) {
-      this.log('error: you cannot pick logo');
+      this.log('error: you do not have permission to pick logo');
       return false;
     }
-    if (this.logoPicked) {
-      this.log(`error: logo has been picked(${this.logoPicked}):`);
+    // Can only been picked once
+    if (this.isLogoPicked) {
+      this.log(`error: logo has been picked(${this.isLogoPicked}):`);
       this.printCollection(this.logo);
       return false;
     }
@@ -128,16 +129,29 @@ export default class CryptoFishContract extends BaseContract {
     let logoScore: u32 = 0;
     for (let index = 0; index < this.collections.length; index += 1) {
       const collection = this.collections[index];
+      if (!collection || !collection.get('index')) continue;
       const currentScore = <u32>parseInt(collection.get('score'), 10);
       if (currentScore > logoScore) {
         logo = collection;
+        logoScore = currentScore;
       }
     }
     this.logo = logo;
-    this.logoPicked = true;
+    this.isLogoPicked = true;
     this.log(`pickLogoByScore success(${logoScore})`);
     this.printCollection(logo);
     return true;
+  }
+
+  // Get picked logo collection
+  public getLogo(): Collection | null {
+    if (this.isLogoPicked) {
+      this.log('get logo success:');
+      this.printCollection(this.logo);
+      return this.logo;
+    }
+    this.log('error: logo has not been picked, please wait');
+    return null;
   }
 
   // Favor collection by #Index
