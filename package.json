@@ -2,24 +2,12 @@
   "name": "@antchain/cryptofish",
   "version": "0.0.0",
   "private": true,
-  "files": [
-    "assembly",
-    "config/myfish.js",
-    ".gitignore",
-    "global.d.ts",
-    "index.js",
-    "package.json",
-    "tsconfig.json"
-  ],
   "dependencies": {
     "@antchain/myassembly": "0.0.5-alpha.0",
     "@assemblyscript/loader": "^0.19.22"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "access": "public"
-  },
   "devDependencies": {
+    "@antchain/myfish": "0.0.5-alpha.0",
     "@as-pect/cli": "^6.2.4",
     "assemblyscript": "^0.19.22"
   }
