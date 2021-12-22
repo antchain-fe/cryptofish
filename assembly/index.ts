@@ -13,29 +13,25 @@ export default class CryptoFishContract extends BaseContract {
   // Mint available, depend on developer
   private canMint: bool;
   // CryptoFish contract owner's address
-  private owner!: Address;
+  private owner: Address;
   // Collections list
-  private collections!: Collection[];
+  private collections: Collection[];
   // Picked logo collection
-  private logo!: Collection;
+  private logo: Collection;
   private isLogoPicked: bool;
 
   // Private builtin attributes infos
-  private attributeKeyList!: AttributeType[];
-  private attributeWeights!: Map<AttributeType, u32>;
-  private attributes!: Map<AttributeType, string>;
+  private attributeKeyList: AttributeType[];
+  private attributeWeights: Map<AttributeType, u32>;
+  private attributes: Map<AttributeType, string>;
 
   constructor() {
     super();
-    this.init();
-  }
-
-  // TODO: change to private before deploy
-  // Init contract, only called when contract is deploying by developer
-  public init(): void {
+    // Prepare contract when deploy contract
     this.canMint = true;
     this.limit = 20; // TODO: verify this value
     this.isLogoPicked = false;
+    this.logo = new Map<string, string>();
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
 
@@ -67,6 +63,10 @@ export default class CryptoFishContract extends BaseContract {
     // Grant the first(index: 0) collection to our developer.
     this.mint();
   }
+
+  // TODO: change to private before deploy
+  // Init contract, only called when contract is deploying by developer
+  public init(): void {}
 
   // Mint collection for current address
   public mint(): bool {
