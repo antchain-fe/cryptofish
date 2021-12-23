@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "compile": "myfish compile -d",
-    "depoly": "",
-    "depoly:local": "myfish run -m \"onCreate()\" -v myvm -u myvm | grep \"🐟\"",
+    "deploy": "myfish deploy",
+    "deploy:myvm": "myfish run -m \"onCreate()\" -v myvm -u myvm | grep \"🐟\"",
     "test": "asp --config node_modules/@antchain/myfish-asp-config"
   },
   "dependencies": {
