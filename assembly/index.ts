@@ -16,6 +16,7 @@ export default class CryptoFishContract extends BaseContract {
   private owner: Address;
   // Collections list
   private collections: Collection[];
+  private collectionAttributeMap: Map<Attribute, bool>;
   // Picked logo collection
   private logo: Collection;
   private isLogoPicked: bool;
@@ -34,6 +35,7 @@ export default class CryptoFishContract extends BaseContract {
     this.logo = new Map<string, string>();
     this.owner = my.getSender().toString(); // Record the contract developer as owner
     this.collections = [];
+    this.collectionAttributeMap = new Map<Attribute, bool>();
 
     // attribute key list depends on rule hash
     this.attributeKeyList = ['skin', 'background', 'frame', 'fin', 'eye', 'tail'];
@@ -102,6 +104,7 @@ export default class CryptoFishContract extends BaseContract {
     this.log('mint collection success:');
     this.printCollection(collection);
     this.collections.push(collection);
+    this.collectionAttributeMap.set(attribute, true);
     return true;
   }
 
@@ -264,8 +267,8 @@ export default class CryptoFishContract extends BaseContract {
   // Attribute should be available and unique
   private isAttributeAvailable(attribute: Attribute): bool {
     // Should be unique
-    for (let index = 0; index < this.collections.length; index += 1) {
-      if (this.collections[index].get('attribute') == attribute) return false;
+    if (this.collectionAttributeMap.has(attribute) && this.collectionAttributeMap.get(attribute) === true) {
+      return false;
     }
 
     // Should be contained in attributes range
