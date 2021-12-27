@@ -1,3 +1,5 @@
+import { Collection } from './types';
+
 /**
  * Parse hex string to u32 int
  * @param hexWithCase {string}
@@ -24,3 +26,37 @@ export function parseHex2Int(hexWithCase: string): u32 {
   }
   throw new Error('[cryptofish] invilid hex string');
 }
+
+/**
+ * Stringify collection to json string
+ * @param collection
+ * @returns {string}
+ */
+export const stringifyCollection = (collection: Collection): string => {
+  const index = collection.get('index');
+  if (!index) {
+    return '';
+  }
+  const creator = collection.get('creator');
+  const attribute = collection.get('attribute');
+  const score = collection.get('score');
+  const favorCount = collection.get('favorCount');
+  return `{"index":${index},"creator":"${creator}","attribute":"${attribute}","score":${score},"favorCount":${favorCount}}`;
+};
+
+/**
+ * Stringify collections to json string
+ * @param collections
+ * @returns {string}
+ */
+export const stringifyCollections = (collections: Collection[]): string => {
+  let result = '[';
+  for (let index = 0; index < collections.length; index += 1) {
+    const collection = collections[index];
+    const str = stringifyCollection(collection);
+    if (str.length > 0) {
+      result = `${result}${index === 0 ? '' : ','}${str}`;
+    }
+  }
+  return `${result}]`;
+};

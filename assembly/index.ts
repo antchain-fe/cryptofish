@@ -1,6 +1,6 @@
 import { my, BaseContract } from '@antchain/myassembly';
 import { Address, Attribute, AttributeType, Collection } from './types';
-import { parseHex2Int } from './utils';
+import { parseHex2Int, stringifyCollection, stringifyCollections } from './utils';
 
 export default class CryptoFishContract extends BaseContract {
   // TODO: You can use this hash to verify the image file containing all the fish
@@ -65,10 +65,6 @@ export default class CryptoFishContract extends BaseContract {
     // Grant the first(index: 0) collection to our developer.
     this.mint();
   }
-
-  // TODO: change to private before deploy
-  // Init contract, only called when contract is deploying by developer
-  public init(): void {}
 
   // Mint collection for current address
   public mint(): bool {
@@ -147,25 +143,25 @@ export default class CryptoFishContract extends BaseContract {
   }
 
   // Get picked logo collection
-  public getLogo(): Collection {
+  public getLogo(): string {
     if (!this.isLogoPicked) {
       throw new Error('logo has not been picked, please wait');
     }
     this.log('get logo success:');
     this.printCollection(this.logo);
-    return this.logo;
+    return stringifyCollection(this.logo);
   }
 
   // Favor collection by #Index
   // "favorByIndex(int)[0]" => "true/false"
   public favorByIndex(index: u32): bool {
-    return this.favorCollection(this.getCollectionByIndex(index));
+    return this.favorCollection(this.getCollectionByIndexPrivate(index));
   }
 
   // Favor collection by attribute
   // "favorByAttribute(string)[123456]" => "true/false"
   public favorByAttribute(attribute: string): bool {
-    return this.favorCollection(this.getCollectionByAttribute(attribute));
+    return this.favorCollection(this.getCollectionByAttributePrivate(attribute));
   }
 
   // Favor collection by attribute
@@ -183,7 +179,11 @@ export default class CryptoFishContract extends BaseContract {
 
   // Get cryptofish collection by index(u32)
   // "getCollectionByIndex(int)[1]" => "collection(Map<string, string>)"
-  public getCollectionByIndex(index: u32): Collection {
+  public getCollectionByIndex(index: u32): string {
+    return stringifyCollection(this.getCollectionByIndexPrivate(index));
+  }
+
+  private getCollectionByIndexPrivate(index: u32): Collection {
     const collection = this.collections[index];
     this.log(`getCollectionByIndex(${index}) =>`);
     this.printCollection(collection);
@@ -192,7 +192,11 @@ export default class CryptoFishContract extends BaseContract {
 
   // Get cryptofish collection by attribute(string)
   // "getCollectionByAttribute(string)[123456]" => "collection(Map<string, string>)"
-  public getCollectionByAttribute(attribute: string): Collection {
+  public getCollectionByAttribute(attribute: string): string {
+    return stringifyCollection(this.getCollectionByAttributePrivate(attribute));
+  }
+
+  public getCollectionByAttributePrivate(attribute: string): Collection {
     let collection!: Collection;
     for (let index = 0; index < this.collections.length; index += 1) {
       const current = this.collections[index];
@@ -212,7 +216,7 @@ export default class CryptoFishContract extends BaseContract {
 
   // Get owned collections
   // "getOwnedCollections()" => "collection[](Array<Map<string, string>>)"
-  public getOwnedCollections(): Collection[] {
+  public getOwnedCollections(): string {
     const address: string = my.getSender().toString();
     const collections: Collection[] = [];
     for (let index = 0; index < this.collections.length; index += 1) {
@@ -222,15 +226,15 @@ export default class CryptoFishContract extends BaseContract {
     }
     this.log(`getOwnedCollections: ${collections.length}`);
     this.printCollections(collections);
-    return collections;
+    return stringifyCollections(collections);
   }
 
   // Get all collections with limit and skip filter
   // "getCollections(int, int)[20, 0]" => "collection[](Array<Map<string, string>>)"
-  public getCollections(limit: u32, skip: u32): Collection[] {
+  public getCollections(limit: u32, skip: u32): string {
     const collections = this.collections.slice(skip, skip + limit);
     this.printCollections(collections);
-    return collections;
+    return stringifyCollections(collections);
   }
 
   // TODO: Test function, should be removed
