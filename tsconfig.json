@@ -1,4 +1,12 @@
 {
-  "extends": "assemblyscript/std/assembly.json",
-  "include": ["assembly", "global.d.ts"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "strict": true
+  }
 }

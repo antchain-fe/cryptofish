@@ -1,5 +1,8 @@
 # deps
 node_modules
+npm-debug.log*
+yarn-error.log
+yarn.lock
 package-lock.json
 
 # build dir
@@ -7,9 +10,18 @@ dist
 log
 
 # private config
-config/*
-!config/myfish.example.js
+contract/config/*
+!contract/config/myfish.example.js
 
 # test files
 testdb
 scripts/*.sh
+
+# misc
+.DS_Store
+
+# umi
+**/src/.umi
+**/src/.umi-production
+**/src/.umi-test
+**/.env.local

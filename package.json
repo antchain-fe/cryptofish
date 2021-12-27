@@ -3,18 +3,32 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "compile": "myfish compile -d",
+    "start": "npm run dev:web",
+    "dev:web": "cd web && umi dev",
+    "build:web": "cd web && umi build",
+    "build": "npm run build:web",
+    "compile": "cd contract && myfish compile -d",
     "deploy": "myfish deploy",
     "deploy:myvm": "myfish run -m \"onCreate()\" -v myvm -u myvm | grep \"🐟\"",
-    "test": "asp --config node_modules/@antchain/myfish-asp-config"
+    "test:contract": "asp --config=contract/as-pect.config.js"
   },
   "dependencies": {
-    "@antchain/myassembly": "0.0.5-alpha.0",
-    "@assemblyscript/loader": "^0.19.22"
+    "@antchain/myassembly": "0.1.0-alpha.2",
+    "@assemblyscript/loader": "^0.19.22",
+    "antd": "^4.18.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "umi": "^3.5.20"
   },
   "devDependencies": {
-    "@antchain/myfish": "0.0.5-alpha.0",
+    "@antchain/myfish": "0.1.0-alpha.2",
     "@as-pect/cli": "^6.2.4",
-    "assemblyscript": "^0.19.22"
+    "@types/execa": "^2.0.0",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "@umijs/preset-react": "^2.1.0",
+    "assemblyscript": "^0.19.22",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4"
   }
 }
