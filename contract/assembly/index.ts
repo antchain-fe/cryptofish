@@ -183,7 +183,7 @@ export default class CryptoFishContract extends BaseContract {
     return stringifyCollection(this.getCollectionByIndexPrivate(index));
   }
 
-  private getCollectionByIndexPrivate(index: u32): Collection {
+  public getCollectionByIndexPrivate(index: u32): Collection {
     const collection = this.collections[index];
     this.log(`getCollectionByIndex(${index}) =>`);
     this.printCollection(collection);
@@ -217,6 +217,10 @@ export default class CryptoFishContract extends BaseContract {
   // Get owned collections
   // "getOwnedCollections()" => "collection[](Array<Map<string, string>>)"
   public getOwnedCollections(): string {
+    return stringifyCollections(this.getOwnedCollectionsPrivate());
+  }
+
+  public getOwnedCollectionsPrivate(): Collection[] {
     const address: string = my.getSender().toString();
     const collections: Collection[] = [];
     for (let index = 0; index < this.collections.length; index += 1) {
@@ -226,15 +230,19 @@ export default class CryptoFishContract extends BaseContract {
     }
     this.log(`getOwnedCollections: ${collections.length}`);
     this.printCollections(collections);
-    return stringifyCollections(collections);
+    return collections;
   }
 
   // Get all collections with limit and skip filter
   // "getCollections(int, int)[20, 0]" => "collection[](Array<Map<string, string>>)"
   public getCollections(limit: u32, skip: u32): string {
+    return stringifyCollections(this.getCollectionsPrivate(limit, skip));
+  }
+
+  public getCollectionsPrivate(limit: u32, skip: u32): Collection[] {
     const collections = this.collections.slice(skip, skip + limit);
     this.printCollections(collections);
-    return stringifyCollections(collections);
+    return collections;
   }
 
   // TODO: Test function, should be removed

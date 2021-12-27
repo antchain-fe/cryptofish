@@ -1,0 +1,3 @@
+{
+  "asls.include": ["contract/assembly/**/*.ts", "contract/assembly/*.ts"]
+}

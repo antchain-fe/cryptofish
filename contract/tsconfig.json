@@ -1,4 +1,4 @@
 {
   "extends": "assemblyscript/std/assembly.json",
-  "include": ["contract/assembly", "global.d.ts"]
+  "include": ["assembly", "global.d.ts"]
 }

@@ -3,17 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "compile": "myfish compile -d",
+    "compile": "cd contract && myfish compile -d",
     "deploy": "myfish deploy",
     "deploy:myvm": "myfish run -m \"onCreate()\" -v myvm -u myvm | grep \"🐟\"",
-    "test": "asp --config node_modules/@antchain/myfish-asp-config"
+    "test:contract": "asp --config=contract/as-pect.config.js"
   },
   "dependencies": {
-    "@antchain/myassembly": "0.0.5-alpha.0",
+    "@antchain/myassembly": "0.1.0-alpha.2",
     "@assemblyscript/loader": "^0.19.22"
   },
   "devDependencies": {
-    "@antchain/myfish": "0.0.5-alpha.0",
+    "@antchain/myfish": "0.1.0-alpha.2",
     "@as-pect/cli": "^6.2.4",
     "assemblyscript": "^0.19.22"
   }

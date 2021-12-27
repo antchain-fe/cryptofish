@@ -21,7 +21,7 @@ describe('CryptoFish Contract', () => {
 
   it('should return collection when getCollectionByIndex', () => {
     const contract = init();
-    const collection = contract.getCollectionByIndex(0);
+    const collection = contract.getCollectionByIndexPrivate(0);
 
     expect(collection.get('index')).toBe('0', 'index');
     expect(collection.get('attribute').length).toBe(6, 'attribute');
@@ -31,8 +31,8 @@ describe('CryptoFish Contract', () => {
 
   it('should return collection when getCollectionByAttribute', () => {
     const contract = init();
-    const attribute = contract.getCollectionByIndex(0).get('attribute');
-    const collection = contract.getCollectionByAttribute(attribute);
+    const attribute = contract.getCollectionByIndexPrivate(0).get('attribute');
+    const collection = contract.getCollectionByAttributePrivate(attribute);
 
     expect(collection.get('index')).toBe('0', 'index');
     expect(collection.get('attribute').length).toBe(6, 'attribute');
@@ -45,30 +45,30 @@ describe('CryptoFish Contract', () => {
     const result = contract.favorByIndex(0);
     expect(result).toBe(true);
 
-    const collection = contract.getCollectionByIndex(0);
+    const collection = contract.getCollectionByIndexPrivate(0);
     expect(collection.get('favorCount')).toBe('1', 'favorCount');
   });
 
   it('should work with favorByAttribute', () => {
     const contract = init();
-    const attribute = contract.getCollectionByIndex(0).get('attribute');
+    const attribute = contract.getCollectionByIndexPrivate(0).get('attribute');
 
     const result = contract.favorByAttribute(attribute);
     expect(result).toBe(true);
 
-    const collection = contract.getCollectionByAttribute(attribute);
+    const collection = contract.getCollectionByAttributePrivate(attribute);
     expect(collection.get('favorCount')).toBe('1', 'favorCount');
   });
 
   it('should work with getOwnedCollections', () => {
     const contract = init();
-    const collections = contract.getOwnedCollections();
+    const collections = contract.getOwnedCollectionsPrivate();
     expect(collections.length).toBe(1);
 
     const result = contract.mint();
     expect(result).toBe(true);
 
-    const newCollections = contract.getOwnedCollections();
+    const newCollections = contract.getOwnedCollectionsPrivate();
     expect(newCollections.length).toBe(2);
   });
 
@@ -91,13 +91,13 @@ describe('CryptoFish Contract', () => {
       expect(success).toBe(true);
     }
 
-    const c1 = contract.getCollections(3, 0);
+    const c1 = contract.getCollectionsPrivate(3, 0);
     expect(c1.length).toBe(3);
     expect(c1[0].get('index')).toBe('0', '0');
     expect(c1[1].get('index')).toBe('1', '1');
     expect(c1[2].get('index')).toBe('2', '2');
 
-    const c2 = contract.getCollections(3, 3);
+    const c2 = contract.getCollectionsPrivate(3, 3);
     expect(c2.length).toBe(3);
     expect(c2[0].get('index')).toBe('3', '3');
     expect(c2[1].get('index')).toBe('4', '4');

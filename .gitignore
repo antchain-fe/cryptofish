@@ -7,8 +7,8 @@ dist
 log
 
 # private config
-config/*
-!config/myfish.example.js
+contract/config/*
+!contract/config/myfish.example.js
 
 # test files
 testdb
