@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "npm run dev:web",
-    "dev:web": "cd web && umi dev",
-    "build:web": "cd web && umi build",
+    "dev:web": "APP_ROOT=web umi dev",
+    "build:web": "APP_ROOT=web umi build",
     "build": "npm run build:web",
     "compile": "cd contract && myfish compile -d",
     "deploy": "myfish deploy",
