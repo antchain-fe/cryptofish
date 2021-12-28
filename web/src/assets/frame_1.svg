@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>frame_1</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="My-Fish" transform="translate(-45.000000, -129.000000)">
+            <g id="Frames" transform="translate(6.000000, 129.000000)">
+                <g id="1" transform="translate(39.000000, 0.000000)">
+                    <rect id="矩形" stroke="#FFFFFF" x="0.5" y="0.5" width="33" height="33"></rect>
+                    <rect id="矩形备份" stroke="#CECECE" x="1.5" y="1.5" width="31" height="31"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
