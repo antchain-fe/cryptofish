@@ -1,4 +1,4 @@
-import { my, BaseContract } from '@antchain/myassembly';
+import { my, Storage, BaseContract } from '@antchain/myassembly';
 import { Address, Attribute, AttributeType, Collection } from './types';
 import { parseHex2Int, stringifyCollection, stringifyCollections } from './utils';
 
@@ -9,58 +9,60 @@ export default class CryptoFishContract extends BaseContract {
   public standard: string = 'CryptoFish';
 
   // Collection count limit per address
-  private limit: u32;
+  // TODO: verify this value
+  private limit: u32 = 20;
   // Mint available, depend on developer
-  private canMint: bool;
+  private canMint: Storage<bool> = new Storage('canMint', true);
   // CryptoFish contract owner's address
-  private owner: Address;
+  private owner: Storage<Address> = new Storage('owner', '');
   // Collections list
-  private collections: Collection[];
-  private collectionAttributeMap: Map<Attribute, bool>;
+  private collections: Storage<Collection[]> = new Storage('collections', []);
+  private collectionAttributeMap: Storage<Map<Attribute, bool>> = new Storage(
+    'collectionAttributeMap',
+    new Map<Attribute, bool>(),
+  );
   // Picked logo collection
-  private logo: Collection;
-  private isLogoPicked: bool;
+  private logo: Storage<Collection> = new Storage('logo', new Map<string, string>());
+  private isLogoPicked: Storage<bool> = new Storage('isLogoPicked', false);
 
   // Private builtin attributes infos
-  private attributeKeyList: AttributeType[];
-  private attributeWeights: Map<AttributeType, u32>;
-  private attributes: Map<AttributeType, string>;
+  // attribute key list depends on rule hash
+  private attributeKeyList: AttributeType[] = ['skin', 'background', 'frame', 'fin', 'eye', 'tail'];
+  private attributeWeights: Map<AttributeType, u32> = new Map<AttributeType, u32>();
+  private attributes: Map<AttributeType, string> = new Map<AttributeType, string>();
 
   constructor() {
     super();
-    // Prepare contract when deploy contract
-    this.canMint = true;
-    this.limit = 20; // TODO: verify this value
-    this.isLogoPicked = false;
-    this.logo = new Map<string, string>();
-    this.owner = my.getSender().toString(); // Record the contract developer as owner
-    this.collections = [];
-    this.collectionAttributeMap = new Map<Attribute, bool>();
 
-    // attribute key list depends on rule hash
-    this.attributeKeyList = ['skin', 'background', 'frame', 'fin', 'eye', 'tail'];
-
-    // attributes depends on rule hash
-    const attributes = new Map<AttributeType, string>();
-    attributes.set('skin', '0123456789');
-    attributes.set('background', '0123456789ABCDEF');
-    attributes.set('frame', '0123456789ABCDEF');
-    attributes.set('fin', '0123456789');
-    attributes.set('eye', '0123456789');
-    attributes.set('tail', '0123456789');
-    this.attributes = attributes;
-
+    // prepare attribute weights
     // `skin/background/frame` has double weights than others when calculating score
-    const attributeWeights = new Map<AttributeType, u32>();
-    attributeWeights.set('skin', 200);
-    attributeWeights.set('background', 200);
-    attributeWeights.set('frame', 200);
-    attributeWeights.set('fin', 100);
-    attributeWeights.set('eye', 100);
-    attributeWeights.set('tail', 100);
-    this.attributeWeights = attributeWeights;
+    this.attributeWeights.set('skin', 200);
+    this.attributeWeights.set('background', 200);
+    this.attributeWeights.set('frame', 200);
+    this.attributeWeights.set('fin', 100);
+    this.attributeWeights.set('eye', 100);
+    this.attributeWeights.set('tail', 100);
 
-    this.log(`contract created by: ${this.owner}`);
+    // prepare attributes
+    this.attributes.set('skin', '0123456789');
+    this.attributes.set('background', '0123456789AB');
+    this.attributes.set('frame', '0123456789AB');
+    this.attributes.set('fin', '0123456789');
+    this.attributes.set('eye', '0123456789');
+    this.attributes.set('tail', '0123456789');
+  }
+
+  // onDeploy callback, only for developers
+  public onContractDeploy(): void {
+    // Prepare contract when deploy contract
+    if (this.owner.get().length > 0) {
+      throw new Error('[cryptofish] cannot run this method');
+    }
+    // Record the contract developer as owner
+    const ownerAddress = my.getSender().toString();
+    this.owner.set(ownerAddress);
+
+    this.log(`contract created by: ${ownerAddress}`);
 
     // Grant the first(index: 0) collection to our developer.
     this.mint();
@@ -71,6 +73,7 @@ export default class CryptoFishContract extends BaseContract {
     // current address
     const creator = my.getSender().toString();
     const ownedCount = <u32>this.getOwnedCollections().length;
+    const canMint = this.canMint.get();
 
     // Limit for each address(see `this.limit`)
     // Developers are not restricted
@@ -81,14 +84,16 @@ export default class CryptoFishContract extends BaseContract {
 
     // Mint available
     // Developers are not restricted
-    if (!this.isOwner() && !this.canMint) {
+    if (!this.isOwner() && !canMint) {
       this.log(`error: ${this.standard} minting is not available`);
       return false;
     }
 
     // generate unique and available attribute
     const attribute = this.generateUniqAttribute();
-    const index = this.collections.length; // TODO: needs to lock `this.collections`?
+    const collections = this.collections.get();
+    const collectionAttributeMap = this.collectionAttributeMap.get();
+    const index = collections.length; // TODO: needs to lock `this.collections`?
 
     const collection: Collection = new Map<string, string>();
     collection.set('index', index.toString());
@@ -99,15 +104,20 @@ export default class CryptoFishContract extends BaseContract {
 
     this.log('mint collection success:');
     this.printCollection(collection);
-    this.collections.push(collection);
-    this.collectionAttributeMap.set(attribute, true);
+
+    // save to chain
+    collections.push(collection);
+    this.collections.set(collections);
+    // mark attribute
+    collectionAttributeMap.set(attribute, true);
+    this.collectionAttributeMap.set(collectionAttributeMap);
     return true;
   }
 
   // Set canMint var, only for developers
   public setCanMint(canMint: bool): void {
     if (this.isOwner()) {
-      this.canMint = canMint;
+      this.canMint.set(canMint);
     }
   }
 
@@ -119,15 +129,18 @@ export default class CryptoFishContract extends BaseContract {
       return false;
     }
     // Can only been picked once
-    if (this.isLogoPicked) {
-      this.log(`error: logo has been picked(${this.isLogoPicked}):`);
-      this.printCollection(this.logo);
+    const isLogoPicked = this.isLogoPicked.get();
+    if (isLogoPicked) {
+      const logo = this.logo.get();
+      this.log(`error: logo has been picked:`);
+      this.printCollection(logo);
       return false;
     }
     let logo!: Collection;
     let logoScore: u32 = 0;
-    for (let index = 0; index < this.collections.length; index += 1) {
-      const collection = this.collections[index];
+    const collections = this.collections.get();
+    for (let index = 0; index < collections.length; index += 1) {
+      const collection = collections[index];
       if (!collection || !collection.get('index')) continue;
       const currentScore = <u32>parseInt(collection.get('score'), 10);
       if (currentScore > logoScore) {
@@ -135,8 +148,8 @@ export default class CryptoFishContract extends BaseContract {
         logoScore = currentScore;
       }
     }
-    this.logo = logo;
-    this.isLogoPicked = true;
+    this.logo.set(logo);
+    this.isLogoPicked.set(true);
     this.log(`pickLogoByScore success(${logoScore})`);
     this.printCollection(logo);
     return true;
@@ -144,12 +157,14 @@ export default class CryptoFishContract extends BaseContract {
 
   // Get picked logo collection
   public getLogo(): string {
-    if (!this.isLogoPicked) {
+    const isLogoPicked = this.isLogoPicked.get();
+    if (!isLogoPicked) {
       throw new Error('logo has not been picked, please wait');
     }
+    const logo = this.logo.get();
     this.log('get logo success:');
-    this.printCollection(this.logo);
-    return stringifyCollection(this.logo);
+    this.printCollection(logo);
+    return stringifyCollection(logo);
   }
 
   // Favor collection by #Index
@@ -182,9 +197,9 @@ export default class CryptoFishContract extends BaseContract {
   public getCollectionByIndex(index: u32): string {
     return stringifyCollection(this.getCollectionByIndexPrivate(index));
   }
-
   public getCollectionByIndexPrivate(index: u32): Collection {
-    const collection = this.collections[index];
+    const collections = this.collections.get();
+    const collection = collections[index];
     this.log(`getCollectionByIndex(${index}) =>`);
     this.printCollection(collection);
     return collection;
@@ -195,11 +210,11 @@ export default class CryptoFishContract extends BaseContract {
   public getCollectionByAttribute(attribute: string): string {
     return stringifyCollection(this.getCollectionByAttributePrivate(attribute));
   }
-
   public getCollectionByAttributePrivate(attribute: string): Collection {
+    const collections = this.collections.get();
     let collection!: Collection;
-    for (let index = 0; index < this.collections.length; index += 1) {
-      const current = this.collections[index];
+    for (let index = 0; index < collections.length; index += 1) {
+      const current = collections[index];
       if (current.get('attribute') == attribute) {
         collection = current;
         break;
@@ -210,21 +225,17 @@ export default class CryptoFishContract extends BaseContract {
     return collection;
   }
 
-  public getCollectionCount(): u32 {
-    return <u32>this.collections.length;
-  }
-
   // Get owned collections
   // "getOwnedCollections()" => "collection[](Array<Map<string, string>>)"
   public getOwnedCollections(): string {
     return stringifyCollections(this.getOwnedCollectionsPrivate());
   }
-
   public getOwnedCollectionsPrivate(): Collection[] {
     const address: string = my.getSender().toString();
+    const totalCollections = this.collections.get();
     const collections: Collection[] = [];
-    for (let index = 0; index < this.collections.length; index += 1) {
-      const collection = this.collections[index];
+    for (let index = 0; index < totalCollections.length; index += 1) {
+      const collection = totalCollections[index];
       if (collection.get('creator') != address) continue;
       collections.push(collection);
     }
@@ -233,22 +244,27 @@ export default class CryptoFishContract extends BaseContract {
     return collections;
   }
 
+  public getCollectionCount(): u32 {
+    return <u32>this.collections.get().length;
+  }
+
   // Get all collections with limit and skip filter
   // "getCollections(int, int)[20, 0]" => "collection[](Array<Map<string, string>>)"
   public getCollections(limit: u32, skip: u32): string {
     return stringifyCollections(this.getCollectionsPrivate(limit, skip));
   }
-
   public getCollectionsPrivate(limit: u32, skip: u32): Collection[] {
-    const collections = this.collections.slice(skip, skip + limit);
-    this.printCollections(collections);
-    return collections;
+    const collections = this.collections.get();
+    const collectionsPart = collections.slice(skip, skip + limit);
+    this.printCollections(collectionsPart);
+    return collectionsPart;
   }
 
   // TODO: Test function, should be removed
   public logAll(): void {
-    this.log(`total: ${this.collections.length}`);
-    this.printCollections(this.collections);
+    const collections = this.collections.get();
+    this.log(`total: ${this.getCollectionCount()}`);
+    this.printCollections(collections);
   }
 
   // Generate unique attribute
@@ -279,7 +295,8 @@ export default class CryptoFishContract extends BaseContract {
   // Attribute should be available and unique
   private isAttributeAvailable(attribute: Attribute): bool {
     // Should be unique
-    if (this.collectionAttributeMap.has(attribute) && this.collectionAttributeMap.get(attribute) === true) {
+    const collectionAttributeMap = this.collectionAttributeMap.get();
+    if (collectionAttributeMap.has(attribute) && collectionAttributeMap.get(attribute) === true) {
       return false;
     }
 
@@ -301,7 +318,7 @@ export default class CryptoFishContract extends BaseContract {
 
   // Get is owner(developer)
   private isOwner(): bool {
-    return this.owner == my.getSender().toString();
+    return this.owner.get() == my.getSender().toString();
   }
 
   // Print collections to stdout

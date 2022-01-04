@@ -2,6 +2,7 @@ import CryptoFishContract from './index';
 
 function init(): CryptoFishContract {
   const contract = new CryptoFishContract();
+  contract.onContractDeploy();
   return contract;
 }
 
