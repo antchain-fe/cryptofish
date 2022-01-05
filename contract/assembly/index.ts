@@ -295,12 +295,26 @@ export default class CryptoFishContract extends BaseContract {
 
   // Generate unique attribute
   private generateUniqAttribute(): Attribute {
-    // TODO: how to generate random and unique attribute
-    let seed = 123456;
-    while (!this.isAttributeAvailable(seed.toString())) {
-      seed += 1;
+    const txHash = my.getTxHash();
+    const skinRange = this.attributes.get('skin').length;
+    const backgroundRange = this.attributes.get('background').length;
+    const frameRange = this.attributes.get('frame').length;
+    const finRange = this.attributes.get('fin').length;
+    const eyeRange = this.attributes.get('eye').length;
+    const tailRange = this.attributes.get('tail').length;
+
+    for (let index = 0; index < txHash.length - 6; index += 1) {
+      const sourceAttribute = txHash.substr(index, 6).split('');
+      const skin = parseHex2Int(sourceAttribute[0]) % skinRange;
+      const background = parseHex2Int(sourceAttribute[1]) % backgroundRange;
+      const frame = parseHex2Int(sourceAttribute[2]) % frameRange;
+      const fin = parseHex2Int(sourceAttribute[3]) % finRange;
+      const eye = parseHex2Int(sourceAttribute[4]) % eyeRange;
+      const tail = parseHex2Int(sourceAttribute[5]) % tailRange;
+      const attribute = `${skin.toString()}${background.toString()}${frame.toString()}${fin.toString()}${eye.toString()}${tail.toString()}`;
+      if (this.isAttributeAvailable(attribute)) return attribute;
     }
-    return seed.toString();
+    throw new Error('[cryptofish] cannot generate attribute');
   }
 
   // Calculate score by attribute
@@ -327,16 +341,6 @@ export default class CryptoFishContract extends BaseContract {
     }
 
     // Should be contained in attributes range
-    const currentAttrList: string[] = attribute.split('');
-    const keyList = this.attributeKeyList;
-    for (let index = 0; index < keyList.length; index += 1) {
-      const attributeRangeString = this.attributes.get(keyList[index]); // such as `0123456789`
-      // make sure each attribute's value under the attributes range rule
-      if (!attributeRangeString || !attributeRangeString.split('').includes(currentAttrList[index])) {
-        this.log(`error: attribute(${attribute}) is not available(${keyList[index]}: ${attributeRangeString})`);
-        return false;
-      }
-    }
 
     // Congratulations! Your generated attribute is available.
     return true;
