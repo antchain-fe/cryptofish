@@ -23,10 +23,10 @@ const HomePage: React.FC<unknown> = () => {
         <Space size="large" direction="vertical">
           <MainCard bordered={false}>
             <Typography>
-              <Typography.Title>Myfish 纪念卡</Typography.Title>
+              <Typography.Title>Myfish 加密鱼</Typography.Title>
               <Typography.Paragraph>
-                Myfish 纪念卡（cryptofish）是通过 Myfish
-                工具链开发、运行在蚂蚁链联盟链测试网的一款分布式应用（dApp），它包含智能合约和前端应用两部分。
+                Myfish 加密鱼（CryptoFish）是通过 <a href="https://opendocs.antchain.antgroup.com/myfish">Myfish</a>{' '}
+                工具链开发、运行在<a href="https://antchain.antgroup.com/">蚂蚁链</a>实验链上的一款分布式应用（DApp）。
               </Typography.Paragraph>
             </Typography>
             <Space>
@@ -51,18 +51,23 @@ const HomePage: React.FC<unknown> = () => {
           <MainCard bordered={false}>
             <Typography>
               <Typography.Paragraph>
-                为纪念 SEEConf 2022 大会上 Myfish 顺利发布，大家可以通过这个 DApp
-                来领取「纪念卡」，每一个纪念卡都是独一无二的。
+                为纪念 <a href="https://seeconf.antfin.com/">SEEConf 2022</a> 大会上 Myfish 对外开放公测，大家可以通过这个 DApp
+                来参与 Myfish 的 Logo 共创。这是一个分布式应用的实验，每个人都可以参与。
+                我们提供一份纪念品（SEEConf 的卫衣+CryptoFish 的贴纸）奖励最后创造出 Logo 的用户。
               </Typography.Paragraph>
               <Typography.Paragraph>
-                同时我们会在大家领取的纪念卡中，通过预先写好的逻辑挑选一个作为 Myfish 的
-                Logo，整个过程将自动完成无法人为干预。
+                每个账号可以通过这个应用调用我们部署在实验链上的智能合约，智能合约的逻辑会随机的生成一个 Logo，每个 Logo 都有一个属性分。
+                我们会选择属性分最高的 Logo 来作为 Myfish 最终的 Logo。
+              </Typography.Paragraph>
+              <Typography.Paragraph>
+                CryptoFish 生成 Logo 的逻辑都是通过智能合约实现，源代码开放，程序分布式的运行在区块链上，由区块链来确保这个纪念活动的公平透明。
+                获得奖励的用户请联系我们，我们会将纪念品寄出。<a href="https://www.yuque.com/antchain-fe/blog/cryptofish">了解更多</a>。
               </Typography.Paragraph>
             </Typography>
           </MainCard>
         </Space>
       </Space>
-    </FullSpace>
+    </FullSpace >
   );
 };
 export default HomePage;
