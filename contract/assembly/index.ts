@@ -3,8 +3,9 @@ import { Address, Attribute, AttributeType, Collection } from './types';
 import { parseHex2Int, stringifyCollection, stringifyCollections } from './utils';
 
 export default class CryptoFishContract extends BaseContract {
-  // TODO: You can use this hash to verify the image file containing all the fish
-  public ruleHash: string = 'xxxxxxxx';
+  // You can use this hash to verify the rule image file containing all the fish's attributes
+  // $ md5 ./assets/rule.png => ada24c6d6d4d403374c81995cceb7262
+  public ruleHash: string = 'ada24c6d6d4d403374c81995cceb7262';
   // CryptoFish standard name
   public standard: string = 'CryptoFish';
 
