@@ -95,7 +95,7 @@ export default class CryptoFishContract extends BaseContract {
     const attribute = this.generateUniqAttribute();
     const collections = this.collections.get();
     const collectionAttributeMap = this.collectionAttributeMap.get();
-    const index = collections.length; // TODO: needs to lock `this.collections`?
+    const index = collections.length;
 
     const collection: Collection = new Map<string, string>();
     collection.set('index', index.toString());
@@ -278,19 +278,6 @@ export default class CryptoFishContract extends BaseContract {
     const collectionsPart = collections.slice(skip, skip + limit);
     this.printCollections(collectionsPart);
     return collectionsPart;
-  }
-
-  // TODO: Test function, should be removed
-  public logAll(): void {
-    const collections = this.collections.get();
-    this.log(`total: ${this.getCollectionCount()}`);
-    this.printCollections(collections);
-  }
-  // TODO: Test function, should be removed
-  public getTxTimestamp(): string {
-    return `getBlockTimeStamp: ${my.getBlockTimeStamp()}; getGas: ${my.getGas()}; getOrigin: ${my
-      .getOrigin()
-      .toString()}; getTxHash: ${my.getTxHash()}`;
   }
 
   // Generate unique attribute
