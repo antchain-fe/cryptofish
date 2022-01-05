@@ -1,3 +1,9 @@
 {
-  "asls.include": ["contract/assembly/**/*.ts", "contract/assembly/*.ts"]
+  "asls.include": [
+    "contract/assembly/**/*.ts",
+    "contract/assembly/*.ts"
+  ],
+  "conventionalCommits.scopes": [
+    "contract"
+  ]
 }

@@ -18,7 +18,7 @@ const MainCard = styled(Card)`
 const HomePage: React.FC<unknown> = () => {
   return (
     <FullSpace align="center">
-      <Space size="large" align="start">
+      <Space size="large" align="start" style={{ margin: '30px 0' }}>
         <Logo />
         <Space size="large" direction="vertical">
           <MainCard bordered={false}>
@@ -26,7 +26,7 @@ const HomePage: React.FC<unknown> = () => {
               <Typography.Title>Myfish 纪念卡</Typography.Title>
               <Typography.Paragraph>
                 Myfish 纪念卡（cryptofish）是通过 Myfish
-                工具链开发、运行在蚂蚁链（antchain）测试网的一款分布式应用（dApp），它包含智能合约和前端应用两部分。
+                工具链开发、运行在蚂蚁链联盟链测试网的一款分布式应用（dApp），它包含智能合约和前端应用两部分。
               </Typography.Paragraph>
             </Typography>
             <Space>
@@ -51,11 +51,12 @@ const HomePage: React.FC<unknown> = () => {
           <MainCard bordered={false}>
             <Typography>
               <Typography.Paragraph>
-                为纪念 SEEConf 2022 大会上 Myfish 顺利发布，大家可以通过这个 dApp
-                来领取「纪念卡」，每一个纪念卡都是独一无二的，由区块链证明其唯一性和所有权。
+                为纪念 SEEConf 2022 大会上 Myfish 顺利发布，大家可以通过这个 DApp
+                来领取「纪念卡」，每一个纪念卡都是独一无二的。
               </Typography.Paragraph>
               <Typography.Paragraph>
-                同时我们会在大家领取的纪念卡中，通过预先写好的逻辑挑选一个作为 Myfish 的 Logo，由区块链证明其不可篡改。
+                同时我们会在大家领取的纪念卡中，通过预先写好的逻辑挑选一个作为 Myfish 的
+                Logo，整个过程将自动完成无法人为干预。
               </Typography.Paragraph>
             </Typography>
           </MainCard>

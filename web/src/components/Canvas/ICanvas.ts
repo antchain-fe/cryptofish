@@ -7,3 +7,7 @@ export interface ICanvasProps {
   style?: React.CSSProperties;
   className?: string;
 }
+
+export interface ICanvasRef {
+  toDataURL: (type?: string, quality?: any) => string | void;
+}

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { attributeRank, attributesRange, cache } from '@/common/attribute';
-import type { ICanvasProps } from './ICanvas';
+import type { ICanvasProps, ICanvasRef } from './ICanvas';
+
+export * from './ICanvas';
 
 const imgCache: Map<string, Promise<HTMLImageElement>> = new Map();
 // const ratio = 10; //devicePixelRatio || 1; // 获取设备的像素比
@@ -23,7 +25,7 @@ async function loadAsset(name: string): Promise<HTMLImageElement> {
   return p;
 }
 
-export const Canvas: React.FC<ICanvasProps> = ({ attribute, ratio = 1, style, className }) => {
+export const Canvas = React.forwardRef<ICanvasRef, ICanvasProps>(({ attribute, ratio = 1, style, className }, ref) => {
   // console.log(attribute);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [width, height] = React.useMemo(() => [w * ratio, h * ratio], [ratio]);
@@ -54,8 +56,16 @@ export const Canvas: React.FC<ICanvasProps> = ({ attribute, ratio = 1, style, cl
     render();
   }, [attribute, width, height, ratio]);
 
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      toDataURL: (type = 'image/png', quality = 1.0) => canvasRef.current?.toDataURL(type, quality),
+    }),
+    [],
+  );
+
   return (
     <canvas ref={canvasRef} className={className} width={width} height={height} style={{ ...style, width, height }} />
   );
-};
+});
 Canvas.displayName = 'Canvas';
