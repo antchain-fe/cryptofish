@@ -9,8 +9,7 @@ export default class CryptoFishContract extends BaseContract {
   public standard: string = 'CryptoFish';
 
   // Collection count limit per address
-  // TODO: verify this value
-  private limit: u32 = 20;
+  private limit: u32;
   // Mint available, depend on developer
   private canMint: Storage<bool> = new Storage('canMint', true);
   // CryptoFish contract owner's address
@@ -33,6 +32,8 @@ export default class CryptoFishContract extends BaseContract {
 
   constructor() {
     super();
+
+    this.limit = 20;
 
     // prepare attribute weights
     // `skin/background/frame` has double weights than others when calculating score
@@ -72,19 +73,20 @@ export default class CryptoFishContract extends BaseContract {
   public mint(): bool {
     // current address
     const creator = my.getSender().toString();
-    const ownedCount = <u32>this.getOwnedCollections().length;
+    const ownedCount = <u32>this.getOwnedCollectionsPrivate().length;
     const canMint = this.canMint.get();
+    const isOwner = this.isOwner();
 
     // Limit for each address(see `this.limit`)
     // Developers are not restricted
-    if (!this.isOwner() && ownedCount >= this.limit) {
+    if (ownedCount >= this.limit && !isOwner) {
       this.log(`error: you cannot own more than ${this.limit} collections(${creator})`);
       return false;
     }
 
     // Mint available
     // Developers are not restricted
-    if (!this.isOwner() && !canMint) {
+    if (!canMint && !isOwner) {
       this.log(`error: ${this.standard} minting is not available`);
       return false;
     }
@@ -369,6 +371,6 @@ export default class CryptoFishContract extends BaseContract {
 
   // Common log method, use [cryptofish] as prefix
   private log(message: string): void {
-    my.println(`[cryptofish] ${message}`);
+    my.log(`[cryptofish] ${message}`, []);
   }
 }
