@@ -11,7 +11,7 @@ const MainLayout: React.FC<React.PropsWithChildren<unknown>> = ({ children }) =>
         <Anchor>
           <Header>
             <Typography.Title level={3} style={{ margin: 0 }}>
-              cryptofish
+              CryptoFish
             </Typography.Title>
             <Connector />
           </Header>
