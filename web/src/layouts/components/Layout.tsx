@@ -18,6 +18,8 @@ export const Header = styled(AntdLayout.Header)`
 `;
 
 export const Content = styled(AntdLayout.Content)`
+  display: flex;
+  justify-content: center;
   flex-shrink: 0;
 `;
 

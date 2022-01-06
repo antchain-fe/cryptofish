@@ -25,6 +25,18 @@ export const attributeRank: Attribute[] = [
   Attribute.Eye,
 ];
 
+export const string2Attribute = (attr: string): Record<Attribute, string> => {
+  const [skin, background, frame, fin, eye, tail] = attr.split('');
+  return {
+    skin,
+    background,
+    frame,
+    fin,
+    eye,
+    tail,
+  };
+};
+
 export const getRandomAttribute = () => {
   const attribute = {} as Record<Attribute, string>;
   attributeRank.forEach((a) => {

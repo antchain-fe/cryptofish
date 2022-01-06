@@ -1,10 +1,13 @@
 import * as React from 'react';
-import type { IConnectorProps } from './IConnector';
+import { Button, Tooltip } from 'antd';
+import type { IConnectorProps, IConnectorRef } from './IConnector';
 import { useAntchain } from '@antchain/jssdk/react';
 import { Avatar } from './Avatar';
 import { DownloadHelper } from './DownloadHelper';
+import { ConnectHelper } from './ConnectHelper';
+import styled from 'styled-components';
 
-export const Connector: React.FC<IConnectorProps> = () => {
+export const Connector = React.forwardRef<IConnectorRef, IConnectorProps>(({ size }, ref) => {
   const {
     loading,
     isInstalled,
@@ -15,18 +18,31 @@ export const Connector: React.FC<IConnectorProps> = () => {
     },
   } = useAntchain();
 
-  const isConnected = React.useMemo(() => !!account, [account]);
+  const isConnected = React.useMemo(() => !!account?.accountAddress, [account]);
 
-  console.log(loading, isInstalled, isConnected, chainId, account);
-
-  if (loading) return <div>Loading...</div>;
-  if (!isInstalled) return <DownloadHelper />;
-  return (
-    <div>
-      <Avatar address="406faa3c165c25a5ff520cee19dd51146283fcabfcdaa490477a7b4be7f97e8a" />
-    </div>
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      name: account.accountName,
+      address: account.accountAddress,
+    }),
+    [account],
   );
-};
 
-// TODO: refactor to umi-plugin-myfish
-export { AntchainProvider } from '@antchain/jssdk/react';
+  if (loading)
+    return (
+      <Button size={size} shape="round" loading>
+        加载中...
+      </Button>
+    );
+  if (!isInstalled) return <DownloadHelper size={size} />;
+  if (!isConnected) return <ConnectHelper size={size} />;
+
+  return (
+    <Tooltip title={account.accountAddress}>
+      <Button size={size} shape="round" type="primary" icon={<Avatar size={size} address={account.accountAddress} />}>
+        {account.accountName}
+      </Button>
+    </Tooltip>
+  );
+});

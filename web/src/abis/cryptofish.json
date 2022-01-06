@@ -1,0 +1,231 @@
+{
+  "____comment": "This file was generated with Myfish. DO NOT EDIT.",
+  "version": "mychain::abi/1.5",
+  "contract_version": 1,
+  "contract_git_id": "cryptofish-debug-01051355",
+  "vm_type": "wasm",
+  "source_type": "AssemblyScript",
+  "compiler_version": "Myfish 0.1.0-alpha.3",
+  "message": "",
+  "interfaces": [
+    {
+      "name": "onContractDeploy",
+      "type": "onContractDeploy"
+    },
+    {
+      "name": "mint",
+      "type": "mint"
+    },
+    {
+      "name": "setCanMint",
+      "type": "setCanMint"
+    },
+    {
+      "name": "pickLogoByScore",
+      "type": "pickLogoByScore"
+    },
+    {
+      "name": "getLogo",
+      "type": "getLogo"
+    },
+    {
+      "name": "favorByIndex",
+      "type": "favorByIndex"
+    },
+    {
+      "name": "favorByAttribute",
+      "type": "favorByAttribute"
+    },
+    {
+      "name": "getCollectionByIndex",
+      "type": "getCollectionByIndex"
+    },
+    {
+      "name": "getCollectionByIndexPrivate",
+      "type": "getCollectionByIndexPrivate"
+    },
+    {
+      "name": "getCollectionByAttribute",
+      "type": "getCollectionByAttribute"
+    },
+    {
+      "name": "getCollectionByAttributePrivate",
+      "type": "getCollectionByAttributePrivate"
+    },
+    {
+      "name": "getOwnedCollections",
+      "type": "getOwnedCollections"
+    },
+    {
+      "name": "getOwnedCollectionsPrivate",
+      "type": "getOwnedCollectionsPrivate"
+    },
+    {
+      "name": "getCollectionCount",
+      "type": "getCollectionCount"
+    },
+    {
+      "name": "getCollections",
+      "type": "getCollections"
+    },
+    {
+      "name": "getCollectionsPrivate",
+      "type": "getCollectionsPrivate"
+    },
+    {
+      "name": "logAll",
+      "type": "logAll"
+    },
+    {
+      "name": "getTxTimestamp",
+      "type": "getTxTimestamp"
+    }
+  ],
+  "structs": [
+    {
+      "name": "onContractDeploy",
+      "fields": [],
+      "results": ["void"]
+    },
+    {
+      "name": "mint",
+      "fields": [],
+      "results": ["bool"]
+    },
+    {
+      "name": "setCanMint",
+      "fields": [
+        {
+          "name": "canMint",
+          "type": "uint32"
+        }
+      ],
+      "results": ["void"]
+    },
+    {
+      "name": "pickLogoByScore",
+      "fields": [],
+      "results": ["bool"]
+    },
+    {
+      "name": "getLogo",
+      "fields": [],
+      "results": ["string"]
+    },
+    {
+      "name": "favorByIndex",
+      "fields": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "results": ["bool"]
+    },
+    {
+      "name": "favorByAttribute",
+      "fields": [
+        {
+          "name": "attribute",
+          "type": "string"
+        }
+      ],
+      "results": ["bool"]
+    },
+    {
+      "name": "getCollectionByIndex",
+      "fields": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "results": ["string"]
+    },
+    {
+      "name": "getCollectionByIndexPrivate",
+      "fields": [
+        {
+          "name": "index",
+          "type": "uint32"
+        }
+      ],
+      "results": ["Collection"]
+    },
+    {
+      "name": "getCollectionByAttribute",
+      "fields": [
+        {
+          "name": "attribute",
+          "type": "string"
+        }
+      ],
+      "results": ["string"]
+    },
+    {
+      "name": "getCollectionByAttributePrivate",
+      "fields": [
+        {
+          "name": "attribute",
+          "type": "string"
+        }
+      ],
+      "results": ["Collection"]
+    },
+    {
+      "name": "getOwnedCollections",
+      "fields": [],
+      "results": ["string"]
+    },
+    {
+      "name": "getOwnedCollectionsPrivate",
+      "fields": [],
+      "results": ["Collection[]"]
+    },
+    {
+      "name": "getCollectionCount",
+      "fields": [],
+      "results": ["uint32"]
+    },
+    {
+      "name": "getCollections",
+      "fields": [
+        {
+          "name": "limit",
+          "type": "uint32"
+        },
+        {
+          "name": "skip",
+          "type": "uint32"
+        }
+      ],
+      "results": ["string"]
+    },
+    {
+      "name": "getCollectionsPrivate",
+      "fields": [
+        {
+          "name": "limit",
+          "type": "uint32"
+        },
+        {
+          "name": "skip",
+          "type": "uint32"
+        }
+      ],
+      "results": ["Collection[]"]
+    },
+    {
+      "name": "logAll",
+      "fields": [],
+      "results": ["void"]
+    },
+    {
+      "name": "getTxTimestamp",
+      "fields": [],
+      "results": ["string"]
+    }
+  ],
+  "types": [],
+  "variants": []
+}

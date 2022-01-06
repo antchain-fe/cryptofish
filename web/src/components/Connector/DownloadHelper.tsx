@@ -3,11 +3,15 @@ import { Button, Card, Modal, Space } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
+export interface IDownloadHelperProps {
+  size?: any;
+}
+
 const FullWidthSpace = styled(Space)`
   width: 100%;
 `;
 
-export const DownloadHelper: React.FC = () => {
+export const DownloadHelper: React.FC<IDownloadHelperProps> = ({ size }) => {
   const [visible, setVisible] = React.useState(false);
   return (
     <>
@@ -18,7 +22,7 @@ export const DownloadHelper: React.FC = () => {
           <Card title="Edge 插件" bodyStyle={{ padding: 0 }} extra={<Button type="link">下载</Button>} />
         </FullWidthSpace>
       </Modal>
-      <Button shape="round" icon={<DownloadOutlined />} onClick={() => setVisible(true)}>
+      <Button size={size} shape="round" type="primary" icon={<DownloadOutlined />} onClick={() => setVisible(true)}>
         下载蚂蚁链连接器
       </Button>
     </>
