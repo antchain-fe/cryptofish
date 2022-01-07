@@ -17,7 +17,7 @@ describe('CryptoFish Contract', () => {
   it('should mint collection successfully', () => {
     const contract = init();
     const result = contract.mint();
-    expect(result).toBe(true, 'mint');
+    expect(result).not.toBe('null', 'mint');
   });
 
   it('should return collection when getCollectionByIndex', () => {
@@ -67,7 +67,7 @@ describe('CryptoFish Contract', () => {
     expect(collections.length).toBe(1);
 
     const result = contract.mint();
-    expect(result).toBe(true);
+    expect(result).not.toBe('null');
 
     const newCollections = contract.getOwnedCollectionsPrivate();
     expect(newCollections.length).toBe(2);
@@ -79,7 +79,7 @@ describe('CryptoFish Contract', () => {
     expect(count).toBe(1);
 
     const result = contract.mint();
-    expect(result).toBe(true);
+    expect(result).not.toBe('null');
 
     const newCount = contract.getCollectionCount();
     expect(newCount).toBe(2);
@@ -89,7 +89,7 @@ describe('CryptoFish Contract', () => {
     const contract = init();
     for (let index = 0; index < 6; index += 1) {
       const success = contract.mint();
-      expect(success).toBe(true);
+      expect(success).not.toBe('null');
     }
 
     const c1 = contract.getCollectionsPrivate(3, 0);
@@ -108,7 +108,7 @@ describe('CryptoFish Contract', () => {
   it('should work with pickLogoByScore/getLogo', () => {
     const contract = init();
     const success = contract.mint();
-    expect(success).toBe(true);
+    expect(success).not.toBe('null');
 
     expect(() => {
       const c = init();

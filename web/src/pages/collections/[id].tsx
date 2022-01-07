@@ -3,7 +3,7 @@ import { Row, Col, Card, Skeleton, Tooltip } from 'antd';
 import { useRequest, useParams, history } from 'umi';
 import confetti from 'canvas-confetti';
 import { CollectionCard, ICollection } from '@/components/CollectionsCard';
-import { LikeFilled, LoadingOutlined } from '@ant-design/icons';
+import { LikeTwoTone, LoadingOutlined } from '@ant-design/icons';
 import { useAntChain } from '@/hooks/useAntChain';
 import { message } from 'antd';
 import { Canvas, loadAsset } from '@/components/Canvas';
@@ -95,7 +95,8 @@ const CollectionDetailPage: React.FC<unknown> = () => {
             {favorLoading ? (
               <LoadingOutlined />
             ) : (
-              <LikeFilled
+              <LikeTwoTone
+                twoToneColor="#eb2f96"
                 onClick={async () => {
                   await favorByIndex();
                 }}

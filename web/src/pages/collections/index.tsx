@@ -44,7 +44,7 @@ const PuzzlePage: React.FC<unknown> = () => {
   }, [!!contract]);
 
   return (
-    <Space direction="vertical" style={{ maxWidth: 1000, padding: '40px 0' }}>
+    <Space direction="vertical" style={{ width: 900, padding: '40px 0' }}>
       {loading && !collections.length ? <Skeleton paragraph={{ rows: 4 }} style={{ width: 800 }} /> : null}
       <Row gutter={[16, 20]}>
         {collections?.map((collection) => (

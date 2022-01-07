@@ -2,7 +2,7 @@
   "____comment": "This file was generated with Myfish. DO NOT EDIT.",
   "version": "mychain::abi/1.5",
   "contract_version": 1,
-  "contract_git_id": "cryptofish-debug-01051355",
+  "contract_git_id": "cryptofish-debug-0107",
   "vm_type": "wasm",
   "source_type": "AssemblyScript",
   "compiler_version": "Myfish 0.1.0-alpha.3",
@@ -71,14 +71,6 @@
     {
       "name": "getCollectionsPrivate",
       "type": "getCollectionsPrivate"
-    },
-    {
-      "name": "logAll",
-      "type": "logAll"
-    },
-    {
-      "name": "getTxTimestamp",
-      "type": "getTxTimestamp"
     }
   ],
   "structs": [
@@ -90,7 +82,7 @@
     {
       "name": "mint",
       "fields": [],
-      "results": ["bool"]
+      "results": ["string"]
     },
     {
       "name": "setCanMint",
@@ -214,16 +206,6 @@
         }
       ],
       "results": ["Collection[]"]
-    },
-    {
-      "name": "logAll",
-      "fields": [],
-      "results": ["void"]
-    },
-    {
-      "name": "getTxTimestamp",
-      "fields": [],
-      "results": ["string"]
     }
   ],
   "types": [],

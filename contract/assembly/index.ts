@@ -66,12 +66,13 @@ export default class CryptoFishContract extends BaseContract {
 
     this.log(`contract created by: ${ownerAddress}`);
 
+    this.setCanMint(1);
     // Grant the first(index: 0) collection to our developer.
     this.mint();
   }
 
   // Mint collection for current address
-  public mint(): bool {
+  public mint(): string {
     // current address
     const creator = my.getSender().toString();
     const ownedCount = <u32>this.getOwnedCollectionsPrivate().length;
@@ -82,14 +83,14 @@ export default class CryptoFishContract extends BaseContract {
     // Developers are not restricted
     if (ownedCount >= this.limit && !isOwner) {
       this.log(`error: you cannot own more than ${this.limit} collections(${creator})`);
-      return false;
+      return 'null';
     }
 
     // Mint available
     // Developers are not restricted
     if (!canMint && !isOwner) {
       this.log(`error: ${this.standard} minting is not available`);
-      return false;
+      return 'null';
     }
 
     // generate unique and available attribute
@@ -114,7 +115,7 @@ export default class CryptoFishContract extends BaseContract {
     // mark attribute
     collectionAttributeMap.set(attribute, true);
     this.collectionAttributeMap.set(collectionAttributeMap);
-    return true;
+    return stringifyCollection(collection);
   }
 
   // Set canMint var, only for developers
