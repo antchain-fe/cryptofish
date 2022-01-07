@@ -13,9 +13,9 @@
     "test:contract": "asp --config=contract/as-pect.config.js"
   },
   "dependencies": {
-    "@antchain/myassembly": "0.1.0-alpha.5",
+    "@antchain/myassembly": "0.1.0",
     "@ant-design/icons": "^4.7.0",
-    "@antchain/jssdk": "^0.1.0-alpha.2",
+    "@antchain/jssdk": "^0.1.0",
     "@assemblyscript/loader": "^0.19.22",
     "@metamask/jazzicon": "^2.0.0",
     "ahooks": "^3.1.4",
@@ -27,7 +27,7 @@
     "umi": "^3.5.20"
   },
   "devDependencies": {
-    "@antchain/myfish": "^0.1.0-alpha.5",
+    "@antchain/myfish": "^0.1.0",
     "@as-pect/cli": "^6.2.4",
     "@types/canvas-confetti": "^1.4.2",
     "@types/execa": "^2.0.0",
