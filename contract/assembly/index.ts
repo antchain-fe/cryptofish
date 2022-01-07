@@ -37,11 +37,11 @@ export default class CryptoFishContract extends BaseContract {
     this.limit = 20;
 
     // prepare attribute weights
-    // `skin/background/frame` has double weights than others when calculating score
-    this.attributeWeights.set('skin', 200);
-    this.attributeWeights.set('background', 200);
-    this.attributeWeights.set('frame', 200);
-    this.attributeWeights.set('fin', 100);
+    // `skin/background/frame` has different weights than others when calculating score
+    this.attributeWeights.set('skin', 330);
+    this.attributeWeights.set('background', 220);
+    this.attributeWeights.set('frame', 220);
+    this.attributeWeights.set('fin', 110);
     this.attributeWeights.set('eye', 100);
     this.attributeWeights.set('tail', 100);
 
