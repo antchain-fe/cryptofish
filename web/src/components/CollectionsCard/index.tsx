@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Card } from 'antd';
+import { Card, Tooltip } from 'antd';
 import { string2Attribute } from '@/common/attribute';
 import { Canvas } from '../Canvas';
 import { history } from 'umi';
+import { formatAddress } from '@/common/utils';
 
 export interface ICollection {
   index: number;
@@ -25,9 +26,20 @@ export const CollectionCard: React.FC<ICollectionCardProps> = ({ collection }) =
       onClick={() => {
         history.push(`/collections/${collection.index}`);
       }}
-      cover={<Canvas ratio={6} attribute={attribute} />}
+      cover={<Canvas ratio={6} attribute={attribute!} />}
     >
-      <Card.Meta title={`cryptofish #${collection.index}`} description={`拥有者: ${collection.creator}`} />
+      <Card.Meta
+        title={`cryptofish #${collection.index}`}
+        description={
+          <>
+            <div>特征值: {collection.attribute}</div>
+            <div>
+              铸造者: <Tooltip title={collection.creator}>{formatAddress(collection.creator)}</Tooltip>
+            </div>
+            <div>点赞数: {collection.favorCount}</div>
+          </>
+        }
+      />
     </Card>
   );
 };

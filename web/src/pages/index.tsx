@@ -19,9 +19,6 @@ const MainCard = styled(Card)`
 
 const HomePage: React.FC<unknown> = () => {
   const { address, isConnected } = useAntChain();
-  React.useEffect(() => {
-    if (isConnected) history.push('/collections');
-  }, [isConnected, address]);
 
   return (
     <FullSpace align="center">
@@ -37,7 +34,18 @@ const HomePage: React.FC<unknown> = () => {
               </Typography.Paragraph>
             </Typography>
             <Space>
-              <Connector />
+              {isConnected ? (
+                <>
+                  <Button shape="round" type="primary" onClick={() => history.push('/mint')}>
+                    去铸造
+                  </Button>
+                  <Button shape="round" type="primary" onClick={() => history.push('/collections')}>
+                    查看全部
+                  </Button>
+                </>
+              ) : (
+                <Connector />
+              )}
               <Button
                 shape="round"
                 href="https://github.com/antchain-fe/cryptofish/blob/main/contract/assembly/index.ts"

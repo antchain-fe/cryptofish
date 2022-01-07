@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Row, Col, Divider, Button, Space } from 'antd';
-import { useRequest } from 'umi';
+import { Row, Col, Divider, Button, Space, Skeleton } from 'antd';
+import { history, useRequest } from 'umi';
 import { CollectionCard, ICollection } from '@/components/CollectionsCard';
 import { useAntChain } from '@/hooks/useAntChain';
 import { message } from 'antd';
@@ -10,6 +10,10 @@ const limit = 10;
 const PuzzlePage: React.FC<unknown> = () => {
   const { contract, isConnected } = useAntChain();
   const [collections, setCollections] = React.useState<ICollection[]>([]);
+
+  React.useEffect(() => {
+    if (!isConnected) history.replace('/');
+  }, [isConnected]);
 
   const { loading, run: getCollections } = useRequest(
     async (limit?: number, skip?: number) => {
@@ -41,6 +45,7 @@ const PuzzlePage: React.FC<unknown> = () => {
 
   return (
     <Space direction="vertical" style={{ maxWidth: 1000, padding: '40px 0' }}>
+      {loading && !collections.length ? <Skeleton paragraph={{ rows: 4 }} style={{ width: 800 }} /> : null}
       <Row gutter={[16, 20]}>
         {collections?.map((collection) => (
           <Col className="gutter-row" span={6} key={collection.attribute}>

@@ -25,7 +25,8 @@ export const attributeRank: Attribute[] = [
   Attribute.Eye,
 ];
 
-export const string2Attribute = (attr: string): Record<Attribute, string> => {
+export const string2Attribute = (attr?: string): Record<Attribute, string> | null => {
+  if (!attr) return null;
   const [skin, background, frame, fin, eye, tail] = attr.split('');
   return {
     skin,
