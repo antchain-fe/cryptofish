@@ -7,7 +7,7 @@
     "dev:web": "APP_ROOT=web umi dev",
     "build:web": "APP_ROOT=web umi build",
     "build": "npm run build:web",
-    "compile": "cd contract && myfish compile -d",
+    "compile": "myfish compile -d",
     "deploy": "myfish deploy",
     "deploy:myvm": "myfish run -m \"onCreate()\" -v myvm -u myvm | grep \"🐟\"",
     "test:contract": "asp --config=contract/as-pect.config.js"
@@ -27,7 +27,7 @@
     "umi": "^3.5.20"
   },
   "devDependencies": {
-    "@antchain/myfish": "0.1.0-alpha.2",
+    "@antchain/myfish": "^0.1.0-alpha.5",
     "@as-pect/cli": "^6.2.4",
     "@types/canvas-confetti": "^1.4.2",
     "@types/execa": "^2.0.0",
