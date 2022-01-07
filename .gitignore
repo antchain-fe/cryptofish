@@ -11,7 +11,7 @@ log
 
 # private config
 contract/config/*
-!contract/config/myfish.example.js
+!contract/config/myfish.js
 
 # test files
 testdb

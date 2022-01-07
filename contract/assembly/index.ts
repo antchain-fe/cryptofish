@@ -77,18 +77,17 @@ export default class CryptoFishContract extends BaseContract {
     const creator = my.getSender().toString();
     const ownedCount = <u32>this.getOwnedCollectionsPrivate().length;
     const canMint = this.canMint.get();
-    const isOwner = this.isOwner();
 
     // Limit for each address(see `this.limit`)
     // Developers are not restricted
-    if (ownedCount >= this.limit && !isOwner) {
+    if (ownedCount >= this.limit) {
       this.log(`error: you cannot own more than ${this.limit} collections(${creator})`);
       return 'null';
     }
 
     // Mint available
     // Developers are not restricted
-    if (!canMint && !isOwner) {
+    if (!canMint) {
       this.log(`error: ${this.standard} minting is not available`);
       return 'null';
     }
