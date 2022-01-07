@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Button, Card, Space, Typography } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
-import { ConnectorLogo } from '@/components/ConnectorLogo';
+import { Connector } from '@/components/Connector';
 import { Logo } from './components';
 import styled from 'styled-components';
+import { history, useModel } from 'umi';
+import { useAntChain } from '@/hooks/useAntChain';
 
 const FullSpace = styled(Space)`
   width: 100%;
@@ -16,6 +18,8 @@ const MainCard = styled(Card)`
 `;
 
 const HomePage: React.FC<unknown> = () => {
+  const { address, isConnected } = useAntChain();
+
   return (
     <FullSpace align="center">
       <Space size="large" align="start" style={{ margin: '30px 0' }}>
@@ -30,9 +34,18 @@ const HomePage: React.FC<unknown> = () => {
               </Typography.Paragraph>
             </Typography>
             <Space>
-              <Button type="primary" shape="round" icon={<ConnectorLogo />}>
-                连接蚂蚁链
-              </Button>
+              {isConnected ? (
+                <>
+                  <Button shape="round" type="primary" onClick={() => history.push('/mint')}>
+                    去铸造
+                  </Button>
+                  <Button shape="round" type="primary" onClick={() => history.push('/collections')}>
+                    查看全部
+                  </Button>
+                </>
+              ) : (
+                <Connector />
+              )}
               <Button
                 shape="round"
                 href="https://github.com/antchain-fe/cryptofish/blob/main/contract/assembly/index.ts"

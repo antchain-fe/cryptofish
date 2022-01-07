@@ -9,7 +9,7 @@ const imgCache: Map<string, Promise<HTMLImageElement>> = new Map();
 const [w, h] = [34, 34]; // base width/height
 
 // name: {attr}_{value}
-async function loadAsset(name: string): Promise<HTMLImageElement> {
+export async function loadAsset(name: string): Promise<HTMLImageElement> {
   if (imgCache.has(name)) return imgCache.get(name)!;
   const url = (await cache?.[name]).default;
   const p: Promise<HTMLImageElement> = new Promise((resolve) => {
