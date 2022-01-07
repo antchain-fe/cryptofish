@@ -1,8 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { useInterval } from 'ahooks';
-import { Canvas } from '@/components/Canvas';
-import { Attribute, getRandomAttribute } from '@/common/attribute';
 
 import img1 from '@/assets/logo/1.png';
 import img2 from '@/assets/logo/2.png';

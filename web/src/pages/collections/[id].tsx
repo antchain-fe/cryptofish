@@ -1,19 +1,26 @@
 import * as React from 'react';
-import { Row, Col, Card, Skeleton, Tooltip } from 'antd';
+import { Row, Col, Card, Skeleton, Tooltip, Button } from 'antd';
 import { useRequest, useParams, history } from 'umi';
 import confetti from 'canvas-confetti';
-import { CollectionCard, ICollection } from '@/components/CollectionsCard';
+import { ICollection } from '@/components/CollectionsCard';
 import { LikeTwoTone, LoadingOutlined } from '@ant-design/icons';
 import { useAntChain } from '@/hooks/useAntChain';
 import { message } from 'antd';
-import { Canvas, loadAsset } from '@/components/Canvas';
+import { Canvas, ICanvasRef } from '@/components/Canvas';
 import { string2Attribute, cache } from '@/common/attribute';
 import { formatAddress } from '@/common/utils';
+import styled from 'styled-components';
+
+const DownloadLink = styled.div`
+  text-align: center;
+`;
 
 const CollectionDetailPage: React.FC<unknown> = () => {
   const { id } = useParams<{ id: string }>();
+  const canvasRef = React.useRef<ICanvasRef>(null);
+
   const index = React.useMemo(() => Number(id), [id]);
-  const { contract, isConnected } = useAntChain();
+  const { contract, isConnected, address } = useAntChain();
   const [favor, setFavor] = React.useState(0);
   const [images, setImages] = React.useState<string[]>([]);
 
@@ -30,9 +37,10 @@ const CollectionDetailPage: React.FC<unknown> = () => {
       return { data: JSON.parse(returnValue) as ICollection };
     },
     {
-      ready: !!contract && !!index,
+      ready: !!contract,
       onSuccess: (collection) => {
-        if (collection?.score >= 2000) {
+        if (collection?.score >= 2120) {
+          // 彩蛋哦
           confetti();
         }
         setFavor(collection?.favorCount ?? 0);
@@ -73,16 +81,28 @@ const CollectionDetailPage: React.FC<unknown> = () => {
     }
   }, [!!attribute]);
 
-  console.log(111, images);
-
   if (loading) return <Skeleton avatar paragraph={{ rows: 4 }} style={{ width: 800, padding: '40px 0' }} />;
   if (!loading && !attribute) return <div>error</div>;
 
-  console.log(cache[`skin_${attribute!.skin}`]);
   return (
     <Row gutter={16} style={{ padding: '40px 0', width: 900 }}>
       <Col span={8}>
-        <Canvas attribute={attribute!} ratio={8} />
+        <Canvas attribute={attribute!} ratio={8} ref={canvasRef} />
+        {address === collection?.creator ? (
+          <DownloadLink>
+            <Button
+              type="link"
+              onClick={() => {
+                const a = document.createElement('a');
+                a.href = canvasRef.current?.toDataURL()!;
+                a.download = `cryptofish_${collection?.index}.png`;
+                a.click();
+              }}
+            >
+              下载图片
+            </Button>
+          </DownloadLink>
+        ) : null}
       </Col>
       <Col span={16}>
         <Card title={`CryptoFish #${collection?.index}`}>
