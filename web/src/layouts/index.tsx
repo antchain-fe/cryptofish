@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Anchor, Typography, Button } from 'antd';
+import { Anchor, Typography } from 'antd';
+import { history } from 'umi';
 import { Connector } from '@/components/Connector';
 import { Layout, Header, Content, Footer, GlobalStyle } from './components/Layout';
 
@@ -9,7 +10,7 @@ const MainLayout: React.FC<React.PropsWithChildren<unknown>> = ({ children }) =>
       <GlobalStyle />
       <Anchor>
         <Header>
-          <Typography.Title level={3} style={{ margin: 0 }}>
+          <Typography.Title onClick={() => history.push('/')} level={3} style={{ margin: 0, cursor: 'pointer' }}>
             CryptoFish
           </Typography.Title>
           <Connector size="large" />
