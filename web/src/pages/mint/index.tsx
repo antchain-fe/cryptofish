@@ -72,6 +72,7 @@ const MintPage: React.FC<unknown> = () => {
             <CollectionCard collection={collection} />
           </Col>
         ))}
+        {!loading && collections?.length === 0 ? '还未铸造过 CryptoFish，点击上方按钮铸造，每个账户限量 20 个。' : null}
       </Row>
     </Space>
   );
