@@ -30,14 +30,14 @@ export const DownloadHelper: React.FC<IDownloadHelperProps> = ({ size }) => {
             extra={
               <>
                 <a
-                  href="https://chrome.google.com/webstore/detail/%E8%9A%82%E8%9A%81%E9%93%BE%E8%BF%9E%E6%8E%A5%E5%99%A8/kcdkngkgoiaflfiofeecmhgnnicafkbg"
+                  href="https://chrome.google.com/webstore/detail/%E8%9A%82%E8%9A%81%E9%93%BE%E8%BF%9E%E6%8E%A5%E5%99%A8/ebmdohapebmbddpncmgehmocbbfoegjm"
                   target="_blank"
                 >
                   Chrome 商店下载
                 </a>
                 <Divider type="vertical" />
                 <a
-                  href="https://gw.alipayobjects.com/os/bmw-prod/36564bfb-36ff-48de-bde1-6bcfa600df2e.zip"
+                  href="https://opendocs.antchain.antgroup.com/myfish/dapp-connector"
                   target="_blank"
                 >
                   ZIP 包下载
