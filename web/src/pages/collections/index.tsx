@@ -5,7 +5,7 @@ import { CollectionCard, ICollection } from '@/components/CollectionsCard';
 import { useAntChain } from '@/hooks/useAntChain';
 import { message } from 'antd';
 
-const limit = 10;
+const limit = 12;
 
 const PuzzlePage: React.FC<unknown> = () => {
   const { contract, isConnected } = useAntChain();
