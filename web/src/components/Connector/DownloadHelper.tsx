@@ -35,6 +35,13 @@ export const DownloadHelper: React.FC<IDownloadHelperProps> = ({ size }) => {
                 >
                   Chrome 商店下载
                 </a>
+                <Divider type="vertical" />
+                <a
+                  href="https://opendocs.antchain.antgroup.com/myfish/dapp-connector"
+                  target="_blank"
+                >
+                  ZIP 包下载
+                </a>
               </>
             }
           />
