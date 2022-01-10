@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Row, Col, Card, Skeleton, Tooltip, Button } from 'antd';
-import { useRequest, useParams, history } from 'umi';
+import { useRequest, useParams } from 'umi';
 import confetti from 'canvas-confetti';
 import { ICollection } from '@/components/CollectionsCard';
 import { LikeTwoTone, LoadingOutlined } from '@ant-design/icons';
@@ -9,6 +9,7 @@ import { message } from 'antd';
 import { Canvas, ICanvasRef } from '@/components/Canvas';
 import { string2Attribute, cache } from '@/common/attribute';
 import { formatAddress } from '@/common/utils';
+import { Connector } from '@/components/Connector';
 import styled from 'styled-components';
 
 const DownloadLink = styled.div`
@@ -23,10 +24,6 @@ const CollectionDetailPage: React.FC<unknown> = () => {
   const { contract, isConnected, address } = useAntChain();
   const [favor, setFavor] = React.useState(0);
   const [images, setImages] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    if (!isConnected) history.replace('/');
-  }, [isConnected]);
 
   const { loading, data: collection } = useRequest(
     async () => {
@@ -80,6 +77,16 @@ const CollectionDetailPage: React.FC<unknown> = () => {
       ).then((images) => setImages(images.map(({ default: url }) => url)));
     }
   }, [!!attribute]);
+
+  if (!isConnected) {
+    return (
+      <Row gutter={16} style={{ padding: '40px 0', width: 900 }}>
+        <Col span={24}>
+          查看该 CryptoFish 请先下载连接器并连接链：<Connector />
+        </Col>
+      </Row>
+    )
+  }
 
   if (loading) return <Skeleton avatar paragraph={{ rows: 4 }} style={{ width: 800, padding: '40px 0' }} />;
   if (!loading && !attribute) return <div>error</div>;
