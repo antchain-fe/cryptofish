@@ -65,7 +65,7 @@ export const Canvas = React.forwardRef<ICanvasRef, ICanvasProps>(({ attribute, r
   );
 
   return (
-    <canvas ref={canvasRef} className={className} width={width} height={height} style={{ ...style, width, height }} />
+    <canvas ref={canvasRef} className={className} width={width} height={height} style={{ ...style, width, height, background: 'white' }} />
   );
 });
 Canvas.displayName = 'Canvas';
